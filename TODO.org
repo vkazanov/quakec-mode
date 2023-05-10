@@ -1,0 +1,86 @@
+
+* Further work and ideas
+
+  - [X] local completion
+
+  - [X] basic syntax highlighting for common language elements
+
+  - [X] imenu support
+
+    - [X] qc style functions
+
+    - [X] global variables
+
+    - [X] fields
+
+    - [X] methods
+
+  - [X] which-func support
+
+  - [-] syntax highlighting
+
+    - [X] comments (both cpp/c style)
+
+    - [X] qc functions names
+
+    - [X] model pragmas
+
+    - [X] builtins
+
+    - [X] variable names
+
+      - [X] global
+
+      - [X] fields
+
+      - [X] formal parameters
+
+      - [X] multiple variable definitions per line
+
+      - [X] methods
+
+      - [X] local definition
+
+      - [X] frame functions
+
+    - [ ] check all literals
+
+  - [-] xref
+
+    - [X] local definitions
+
+    - [ ] wider definition search (grep-like or something?)
+
+  - [-] compilation support for popular compilers
+
+    - [X] FTEQCC
+
+    - [ ] others?
+
+  - [ ] publish a package
+
+  - [ ] linting?
+
+  - [ ] c-style functions?
+
+  - [ ] enforce emacs lisp coding conventions
+
+    - [ ] write a package release checklist
+
+    - [ ] checkdoc
+
+    - [ ] package-lint
+
+    - [ ] emacs lisp conventions for variables and constants?
+
+    - [ ] eval-when-compile for rx
+
+  - [ ] unit testing for code nav, font-lock, syntax, compilation
+
+  - [ ] package tool (cask or something)
+
+  - [ ] global completion
+
+  - [ ] flymake/flycheck?
+
+  - [ ] src file support?

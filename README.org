@@ -1,0 +1,58 @@
+* Emacs major mode for QuakeC files
+
+  I was horrified to realise that there's no major mode for QuakeC files so I came up with
+  this.
+
+  Features:
+
+  - vanilla QuakeC syntax highlighting
+
+  - imenu navigation
+
+  - xref-based local definition jumping,
+
+  - completion-at-point
+
+  - compile support assuming FTEQCC warning/error highlighting in Compilation buffers
+
+  - which-function
+
+
+  In other words, this is your typical basic Emacs major-mode.
+
+* Setup
+
+Example setup:
+
+#+begin_src emacs-lisp
+  ;; drop the file somehwere here
+  (defvar my-quakec-mode-path (expand-file-name "path/to/quakec-mode"))
+
+  (defun my-quakec-mode-hook ()
+
+    ;; typical QuakeC conventions
+    (setq-local indent-tabs-mode t)
+    (setq-local tab-width 4)
+
+    ;; Symbol completion local to a file
+    (setq-local completion-at-point-functions '(quakec-completion-at-point))
+
+    ;; Company mode backend to for completion-at-point for local
+    ;; definition
+    (setq-local company-backends '(company-capf))
+
+    ;; Jump to a definition of a symbol at point within a file
+    (setq-local xref-backend-functions #'quakec-xref-backend))
+
+  (use-package quakec-mode
+    :load-path my-quakec-mode-path
+    :mode ("\\.qc\\'" . quakec-mode)
+    :config
+    (add-hook 'quakec-mode-hook my-quakec-mode-hook))
+#+end_src
+
+* Reference
+
+  - Classic [[https://pages.cs.wisc.edu/~jeremyp/quake/quakec/quakec.pdf][QuakeC reference manual]]
+
+  - [[https://www.fteqcc.org/dl/fteqcc_manual.txt][FTEQCC manual]], a modern QuakeC compiler
