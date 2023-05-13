@@ -351,6 +351,35 @@ Argument IDENTIFIER is a symbol to lookup."
     (,quakec-qc-function-frame-params-re (2 font-lock-variable-name-face)
                                          (3 font-lock-variable-name-face))))
 
+(defvar-local quakec-definitions-cache nil
+  "A cache of QuakeC definitions in the current buffer.")
+
+(defun quakec-update-definitions ()
+  "Update the cache of QuakeC definitions."
+  (setq quakec-definitions-cache (make-hash-table :test 'equal))
+  (save-excursion
+    (goto-char (point-min))
+    (while (re-search-forward quakec-definitions-re nil t)
+      (let ((name (match-string-no-properties 1))
+            (signature (match-string 0)))
+        (puthash name signature quakec-definitions-cache)))))
+
+(defun quakec-eldoc-function ()
+  "Show a definition string for the current function or method at
+point."
+  (let ((symbol-name (thing-at-point 'symbol 'no-props)))
+    (when symbol-name
+      ;; try cache first, then update and try again
+      (or (gethash symbol-name quakec-definitions-cache)
+          (progn
+            (quakec-update-definitions)
+            (gethash symbol-name quakec-definitions-cache))))))
+
+(defun quakec-after-save-hook ()
+  "Update QuakeC definitions cache after saving the file."
+  (when (eq major-mode 'quakec-mode)
+    (quakec-update-definitions)))
+
 (defun quakec-which-func ()
   "Find the current function name in a QuakeC buffer."
   (save-excursion
@@ -362,22 +391,31 @@ Argument IDENTIFIER is a symbol to lookup."
 (define-derived-mode quakec-mode c-mode "QuakeC"
   "Major mode for editing QuakeC files."
 
-  ;; code for syntax highlighting
+  ;; Basic syntax highlighting
   (setq-local comment-start "// ")
   (setq-local comment-end "")
   (setq-local syntax-table quakec-mode-syntax-table)
 
+  ;; And font-locking
   (setq font-lock-defaults '((quakec-font-lock-keywords)))
 
+  ;; Imenu
   (setq imenu-case-fold-search t)
   (setq imenu-generic-expression quakec-imenu-generic-expression)
 
+  ;; which-function support
   (add-hook 'which-func-functions #'quakec-which-func nil 'local)
 
+  ;; compile support, only FTEQCC for now
   (setq-local compile-command quakec-default-compile-command)
   (add-to-list 'compilation-error-regexp-alist 'fteqcc)
   (add-to-list 'compilation-error-regexp-alist-alist
-               '(fteqcc "^\\(.*\\)(\\([0-9]+\\)):\\(.*\\)$" 1 2)))
+               '(fteqcc "^\\(.*\\)(\\([0-9]+\\)):\\(.*\\)$" 1 2))
+
+  ;; Eldoc setup
+  (add-hook 'after-save-hook #'quakec-after-save-hook nil 'local)
+  (setq-local eldoc-documentation-function #'quakec-eldoc-function)
+  (quakec-update-definitions))
 
 (provide 'quakec-mode)
 

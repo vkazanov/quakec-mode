@@ -9,13 +9,15 @@
 
   - imenu navigation
 
-  - xref-based local definition jumping,
+  - xref-based local definition jumping
 
-  - completion-at-point
+  - ElDoc inline help for local definitions
+
+  - completion-at-point backend for local definitions
 
   - compile support assuming FTEQCC warning/error highlighting in Compilation buffers
 
-  - which-function
+  - which-function support
 
 
   In other words, this is your typical basic Emacs major-mode.

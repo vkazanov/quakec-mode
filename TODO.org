@@ -55,13 +55,25 @@
 
     - [X] FTEQCC
 
+    - [ ] gmqcc
+
     - [ ] others?
+
+  - [-] Eldoc
+
+    - [X] local definitions
+
+    - [ ] global definition
+
+  - [ ] reuse definition cache between xref and eldoc
+
+  - [ ] customisation options (compiler, etc)
 
   - [ ] publish a package
 
   - [ ] linting?
 
-  - [ ] c-style functions?
+  - [ ] c-style functions? better dialect support?
 
   - [ ] enforce emacs lisp coding conventions
 
