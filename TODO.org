@@ -1,3 +1,29 @@
+* Design considerations (thanks, Discord Quake Remastered!)
+
+ - the majority of developers use FTEQCC, and the dialect that comes with it (see
+   https://www.fteqcc.org/dl/fteqcc_manual.txt)
+
+   - majority of modes use Vanilla QuakeC but worth working on dialects as well
+
+ - default community tools: editors, vscode with plugins
+
+ - Collection of resources: https://github.com/dumptruckDS/awesome-quake
+
+ - QuakeC code:
+
+   - Quake Rerelease: https://github.com/id-Software/quake-rerelease-qc
+
+   - Arcane Dimensions mod: https://github.com/SimsOCallaghan/ArcaneDimensions
+
+   - 2048 mod: https://github.com/jhspetersson/q2048
+
+   - dev kit: https://developer.vera-visions.com/ (https://github.com/VeraVisions/nuclide)
+
+   - dev kit: progs_dump (https://github.com/progs-dump-dev/progs_dump)
+
+ - maintained engines: FTE, Quakespams, Ironwail, vkquake
+
+ - dev kits: progs_dump, nuclide
 
 * Further work and ideas
 
