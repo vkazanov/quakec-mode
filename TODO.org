@@ -2,10 +2,15 @@
 
  - quake directory structure review: https://www.slipseer.com/index.php?threads/understanding-your-quake-directory-installing-custom-content.174/
 
- - the majority of developers use FTEQCC, and the dialect that comes with it (see
-   https://www.fteqcc.org/dl/fteqcc_manual.txt)
+ - compilers
+
+   - the majority of developers use FTEQCC, and the dialect that comes with it (see
+     https://www.fteqcc.org/dl/fteqcc_manual.txt)
 
    - majority of modes use Vanilla QuakeC but worth working on dialects as well
+
+   - gmqcc (https://graphitemaster.github.io/gmqcc/) - a compiler that tries to be modern
+     in its approaches, has tests, it strict with standards, etc
 
  - default community tools: editors, vscode with plugins
 
