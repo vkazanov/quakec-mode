@@ -1,5 +1,7 @@
 * Design considerations (thanks, Discord Quake Remastered!)
 
+ - quake directory structure review: https://www.slipseer.com/index.php?threads/understanding-your-quake-directory-installing-custom-content.174/
+
  - the majority of developers use FTEQCC, and the dialect that comes with it (see
    https://www.fteqcc.org/dl/fteqcc_manual.txt)
 
@@ -23,7 +25,7 @@
 
  - maintained engines: FTE, Quakespams, Ironwail, vkquake
 
- - dev kits: progs_dump, nuclide
+   - engine overview: https://www.slipseer.com/index.php?threads/quake-engines-source-ports-a-beginners-guide.11/
 
 * Further work and ideas
 
