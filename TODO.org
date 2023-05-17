@@ -12,6 +12,8 @@
    - gmqcc (https://graphitemaster.github.io/gmqcc/) - a compiler that tries to be modern
      in its approaches, has tests, it strict with standards, etc
 
+   - the original qcc: https://github.com/id-Software/Quake-Tools/tree/master/qcc
+
  - default community tools: editors, vscode with plugins
 
  - Collection of resources: https://github.com/dumptruckDS/awesome-quake
