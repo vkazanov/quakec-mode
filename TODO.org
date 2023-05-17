@@ -34,6 +34,42 @@
 
    - engine overview: https://www.slipseer.com/index.php?threads/quake-engines-source-ports-a-beginners-guide.11/
 
+* progs.dat format
+
+** Original Quake / qcc progs.data
+
+The binary file format resulting from the QuakeC compiler source code is structured as
+follows:
+
+- progs struct: A metadata header (dprograms_t) describing offsets and sizes for various
+  data sections. This struct is filled at the end of the process.
+
+- strings: A block of null-terminated strings used in the program.
+
+- statements: A block of dstatement_t structures representing bytecode instructions.
+
+- functions: A block of dfunction_t structures providing information about each function in the program.
+
+- global definitions: A block of ddef_t structures representing global variable definitions.
+
+- field definitions: A block of ddef_t structures representing definitions of entity
+  fields.
+
+- globals: A block of global values (4-byte values).
+
+Data types in the file:
+
+- dprograms_t: Metadata about the compiled program, such as version, CRC, and offsets/sizes of the sections.
+
+- ddef_t: Definition of a variable or a field, including type, offset, and string name.
+
+- dstatement_t: An instruction for the Quake virtual machine, containing operation code and operands.
+
+- dfunction_t: Information about a function, including first statement number, parameter details, and string name/file.
+
+All multi-byte values are stored in little-endian format. After writing all sections, the
+header is updated with the correct information and written at the beginning of the file.
+
 * Further work and ideas
 
   - [X] local completion
