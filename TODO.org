@@ -14,6 +14,10 @@
 
    - the original qcc: https://github.com/id-Software/Quake-Tools/tree/master/qcc
 
+     - Quake-Tools/qcc/qcc.h comments have the closest thing to a grammar of Vanilla C.
+       The language is simple enough to make it possible to put together something like
+       eBNF quickly
+
  - default community tools: editors, vscode with plugins
 
  - Collection of resources: https://github.com/dumptruckDS/awesome-quake
