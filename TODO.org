@@ -38,7 +38,19 @@
 
    - engine overview: https://www.slipseer.com/index.php?threads/quake-engines-source-ports-a-beginners-guide.11/
 
-* progs.dat format
+* The Original Quake Internals
+
+** qcc
+
+- The compiler goes through files listed in .src one by one while filling global data
+  structures.
+
+- Order of files included is important because of declarations/defintions.
+
+- The resulting data structures are then dumped into a single file
+
+- There are bits and pieces of non-QuakeC things in files, mostly ignored
+
 
 ** Original Quake / qcc progs.data
 
