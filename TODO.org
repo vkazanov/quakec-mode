@@ -38,12 +38,15 @@
 
    - engine overview: https://www.slipseer.com/index.php?threads/quake-engines-source-ports-a-beginners-guide.11/
 
-* The Original Quake Internals
+
+* Major compilers
 
 ** qcc
 
 - The compiler goes through files listed in .src one by one while filling global data
   structures.
+
+- there 67 ops supported by the VM
 
 - Order of files included is important because of declarations/defintions.
 
@@ -51,6 +54,30 @@
 
 - There are bits and pieces of non-QuakeC things in files, mostly ignored
 
+** fteqcc
+
+- the compiler is still based on the same manual RD parser/lexer as qcc
+
+- there many more language features and target VMs support
+
+- compilation is abstracted into a library (qclib)
+
+- qcc as a library is utilised in fteqccui, qcctui and elsewhere (the engine itself? code
+  reloading? game console? crazy stuff)
+
+** gmqcc
+
+- clean slate reimplementation of the compiler in a C/C++ hybrid, mostly leaning towards
+  the C style
+
+- the compiler is quite advanced. Smells like SSA IR as one of the stages!
+
+- does support language standards (qcc, fteqcc, gbqcc - the default)
+
+- it seems that codegen is limited to a more or less standard QuakeC vm (67 ops) +
+  Darkplaces stuff but I not sure. Is all of FTE supported?
+
+* The Original Quake Internals
 
 ** Original Quake / qcc progs.data
 
@@ -150,7 +177,7 @@ header is updated with the correct information and written at the beginning of t
 
     - [X] local definitions
 
-    - [ ] global definition
+    - [ ] global definition based on progs.src or something
 
   - [ ] reuse definition cache between xref and eldoc
 
