@@ -169,7 +169,9 @@ header is updated with the correct information and written at the beginning of t
 
     - [X] FTEQCC
 
-    - [ ] gmqcc
+    - [X] gmqcc
+
+    - [ ] the original qcc?
 
     - [ ] others?
 

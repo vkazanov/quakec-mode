@@ -26,8 +26,11 @@
 (require 'cl-lib)
 (require 'xref)
 
-(defvar quakec-default-compile-command "fteqcc -Wall "
-  "A default compile command for QuakeC.")
+(defvar quakec-fteqcc-compile-command "fteqcc -Wall "
+  "An FTEQCC compile command for QuakeC.")
+
+(defvar quakec-gmqcc-compile-command "qmqcc -Wall -nocolor "
+  "An GMQCC compile command for QuakeC.")
 
 (defvar quakec-pragmas-re
   (regexp-opt
@@ -406,11 +409,15 @@ point."
   ;; which-function support
   (add-hook 'which-func-functions #'quakec-which-func nil 'local)
 
-  ;; compile support, only FTEQCC for now
-  (setq-local compile-command quakec-default-compile-command)
+  ;; compile warning highlighting for FTEQCC
   (add-to-list 'compilation-error-regexp-alist 'fteqcc)
   (add-to-list 'compilation-error-regexp-alist-alist
                '(fteqcc "^\\(.*\\)(\\([0-9]+\\)):\\(.*\\)$" 1 2))
+
+  ;; compiler warning highlighting for GMQCC
+  (add-to-list 'compilation-error-regexp-alist 'gmqcc)
+  (add-to-list 'compilation-error-regexp-alist-alist
+               '(gmqcc "^\\(.*\\):\\([0-9]+\\):\\([0-9]+\\): \\(.*\\): \\(.*\\)$" 1 2 3))
 
   ;; Eldoc setup
   (add-hook 'after-save-hook #'quakec-after-save-hook nil 'local)

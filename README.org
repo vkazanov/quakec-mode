@@ -27,9 +27,6 @@
 Example setup:
 
 #+begin_src emacs-lisp
-  ;; drop the file somehwere here
-  (defvar my-quakec-mode-path (expand-file-name "path/to/quakec-mode"))
-
   (defun my-quakec-mode-hook ()
 
     ;; typical QuakeC conventions
@@ -44,13 +41,18 @@ Example setup:
     (setq-local company-backends '(company-capf))
 
     ;; Jump to a definition of a symbol at point within a file
-    (setq-local xref-backend-functions #'quakec-xref-backend))
+    (setq-local xref-backend-functions #'quakec-xref-backend)
+
+    ;; Setup the compilation command
+    (setq-local compile-command quakec-fteqcc-compile-command))
 
   (use-package quakec-mode
-    :load-path my-quakec-mode-path
-    :mode ("\\.qc\\'" . quakec-mode)
-    :config
-    (add-hook 'quakec-mode-hook my-quakec-mode-hook))
+    ;; drop the file somehwere here
+    :load-path "path/to/quakec-mode"
+    ;; link the extension
+    :mode "\\.qc\\'"
+    ;; run our configration
+    :hook (quakec-mode . vlk-quakec-mode-hook))
 #+end_src
 
 * Reference
