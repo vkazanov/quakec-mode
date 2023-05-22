@@ -171,9 +171,19 @@ header is updated with the correct information and written at the beginning of t
 
     - [X] gmqcc
 
-    - [ ] the original qcc?
+    - [ ] use the root finding function to always kick off compilation in the project root
+
+    - [ ] qcc
 
     - [ ] others?
+
+  - [ ] flymake
+
+    - [ ] FTEQCC
+
+    - [ ] GMQCC
+
+    - [ ] qcc
 
   - [-] Eldoc
 
@@ -208,7 +218,5 @@ header is updated with the correct information and written at the beginning of t
   - [ ] package tool (cask or something)
 
   - [ ] global completion
-
-  - [ ] flymake/flycheck?
 
   - [ ] src file support?
