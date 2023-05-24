@@ -35,13 +35,13 @@
 (defvar quakec-gmqcc-compile-command "gmqcc -Wall -nocolor "
   "An GMQCC compile command for QuakeC.")
 
-(defvar quakec-pragmas-re
+(defvar quakec--pragmas-re
   (regexp-opt
    '("$frame" "$framegroupstart" "$framegroupend" "$flags" "$base" "$cd" "$modelname" "$origin" "$scale" "$skin")
    'symbols)
   "A regexp matching pragmas.")
 
-(defvar quakec-builtins-re
+(defvar quakec--builtins-re
   (regexp-opt
    '(;; Basic math
      "anglemod" "ceil" "fabs" "floor" "ftos" "rint" "random"
@@ -92,34 +92,34 @@
    'symbols)
   "A regexp matching builtin functions.")
 
-(defvar quakec-constants-re
+(defvar quakec--constants-re
   (regexp-opt '("TRUE" "FALSE") 'symbols)
   "A regexp matching constants.")
 
-(defvar quakec-keywords-re
+(defvar quakec--keywords-re
   (regexp-opt '("if" "else" "for" "do" "while" "switch" "case" "default" "break" "continue" "return" "local") 'symbols)
   "A regexp matching keywords.")
 
-(defvar quakec-basic-type-re
+(defvar quakec--basic-type-re
   (regexp-opt '("void" "entity" "float" "vector" "string") 'symbols)
   "A regexp catching basic types.")
 
-(defvar quakec-name-re
+(defvar quakec--name-re
   (rx-to-string '(one-or-more (or word "_")))
   "A regexp catching symbol names.")
 
 
-(defvar quakec-qc-function-parameter-left-re
+(defvar quakec--qc-function-parameter-left-re
   (rx-to-string `(seq line-start (zero-or-more whitespace)
 		      ;; return type
-		      (regexp ,quakec-basic-type-re)
+		      (regexp ,quakec--basic-type-re)
 		      (zero-or-more whitespace)
 
                       ;; parameter list start
                       "("))
   "A regexp catching the prefix of function declaration.")
 
-(defvar quakec-qc-function-parameter-re
+(defvar quakec--qc-function-parameter-re
   (rx-to-string `(seq (zero-or-more whitespace)
                       ;; optional delimieter
                       (zero-or-more whitespace)
@@ -127,17 +127,17 @@
                       (zero-or-more whitespace)
 
 		      ;; type
-		      (regexp ,quakec-basic-type-re)
+		      (regexp ,quakec--basic-type-re)
 		      (zero-or-more whitespace)
 
                       ;; parameter name
-                      (group-n 1 (regexp ,quakec-name-re))))
+                      (group-n 1 (regexp ,quakec--name-re))))
   "A regexp catching a single function formal parameter.")
 
-(defvar quakec-qc-function-re
+(defvar quakec--qc-function-re
   (rx-to-string `(seq line-start (zero-or-more whitespace)
 		      ;; return type
-		      (regexp ,quakec-basic-type-re)
+		      (regexp ,quakec--basic-type-re)
 		      (zero-or-more whitespace)
 
 		      ;; parameter list
@@ -145,13 +145,13 @@
 		      (zero-or-more whitespace)
 
 		      ;; function name
-		      (group-n 1 (regexp ,quakec-name-re))))
+		      (group-n 1 (regexp ,quakec--name-re))))
   "A regexp catching a function name.")
 
-(defvar quakec-qc-function-frame-params-re
+(defvar quakec--qc-function-frame-params-re
   (rx-to-string `(seq
                   ;; a usual function as a prefix
-                  (regexp ,quakec-qc-function-re)
+                  (regexp ,quakec--qc-function-re)
 
                   ;; followed by 2 additional parameters
                   (zero-or-more whitespace) "="
@@ -159,22 +159,22 @@
                   (zero-or-more whitespace) "["
 
                   (zero-or-more whitespace)
-                  (group-n 2 (seq "$" (regexp ,quakec-name-re)))
+                  (group-n 2 (seq "$" (regexp ,quakec--name-re)))
 
                   (zero-or-more whitespace) ","
 
                   (zero-or-more whitespace)
-                  (group-n 3 (regexp ,quakec-name-re))
+                  (group-n 3 (regexp ,quakec--name-re))
 
                   (zero-or-more whitespace) "]"))
   "A regexp catching a frame function additional params.")
 
-(defvar quakec-qc-method-parameter-left-re
+(defvar quakec--qc-method-parameter-left-re
   (rx-to-string `(seq line-start (zero-or-more whitespace)
                       "."
 
 		      ;; return type
-		      (regexp ,quakec-basic-type-re)
+		      (regexp ,quakec--basic-type-re)
 		      (zero-or-more whitespace)
 
                       ;; parameter list start
@@ -182,12 +182,12 @@
   "A regexp catching the prefix of a method declaration, i.e.
 something like \".void(\".")
 
-(defvar quakec-qc-method-re
+(defvar quakec--qc-method-re
   (rx-to-string `(seq line-start (zero-or-more whitespace)
                       "."
 
 		      ;; return type
-		      (regexp ,quakec-basic-type-re)
+		      (regexp ,quakec--basic-type-re)
 		      (zero-or-more whitespace)
 
 		      ;; parameter list
@@ -195,35 +195,35 @@ something like \".void(\".")
 		      (zero-or-more whitespace)
 
 		      ;; method name
-		      (group-n 1 (regexp ,quakec-name-re))))
+		      (group-n 1 (regexp ,quakec--name-re))))
   "A regexp catching a method name.")
 
 
-(defvar quakec-global-variable-re
+(defvar quakec--global-variable-re
   (rx-to-string `(seq line-start
                       ;; global variable type
-                      (regexp ,quakec-basic-type-re)
+                      (regexp ,quakec--basic-type-re)
                       (zero-or-more whitespace)
 
                       ;; variable name
-                      (group-n 1 (regexp ,quakec-name-re))))
+                      (group-n 1 (regexp ,quakec--name-re))))
   "A regexp catching a global variable declaration.")
 
-(defvar quakec-local-variable-re
+(defvar quakec--local-variable-re
   (rx-to-string `(seq line-start (zero-or-more whitespace)
                       ;; optional local keyword
                       (opt "local")
                       (zero-or-more whitespace)
 
                       ;; global variable type
-                      (regexp ,quakec-basic-type-re)
+                      (regexp ,quakec--basic-type-re)
                       (zero-or-more whitespace)
 
                       ;; variable name
-                      (group-n 1 (regexp ,quakec-name-re))))
+                      (group-n 1 (regexp ,quakec--name-re))))
   "A regexp catching a local variable declaration.")
 
-(defvar quakec-qc-variable-name-re
+(defvar quakec--qc-variable-name-re
   (rx-to-string `(seq (zero-or-more whitespace)
                       ;; optional delimieter
                       (zero-or-more whitespace)
@@ -231,26 +231,26 @@ something like \".void(\".")
                       (zero-or-more whitespace)
 
                       ;; parameter name
-                      (group-n 1 (regexp ,quakec-name-re))))
+                      (group-n 1 (regexp ,quakec--name-re))))
   "A regexp catching variable names in a list of names defined.")
 
-(defvar quakec-field-re
+(defvar quakec--field-re
   (rx-to-string `(seq line-start (zero-or-more whitespace)
                       "."
 
                       ;; field type
-                      (regexp ,quakec-basic-type-re)
+                      (regexp ,quakec--basic-type-re)
                       (zero-or-more whitespace)
 
                       ;; variable name
-                      (group-n 1 (regexp ,quakec-name-re))))
+                      (group-n 1 (regexp ,quakec--name-re))))
   "A regexp catching an entity field declaration.")
 
-(defvar quakec-definitions-re
-  (rx-to-string `(or (regexp ,quakec-qc-function-re)
-                     (regexp ,quakec-qc-method-re)
-                     (regexp ,quakec-global-variable-re)
-                     (regexp ,quakec-field-re)))
+(defvar quakec--definitions-re
+  (rx-to-string `(or (regexp ,quakec--qc-function-re)
+                     (regexp ,quakec--qc-method-re)
+                     (regexp ,quakec--global-variable-re)
+                     (regexp ,quakec--field-re)))
   "A regexp catching all global definitions in a file.
 
 Regexp group 1 should always be the name of the symbol.")
@@ -265,19 +265,19 @@ Regexp group 1 should always be the name of the symbol.")
             (lambda (_) (save-excursion
                      (let (completions)
                        (goto-char (point-min))
-                       (while (re-search-forward quakec-qc-function-re nil t)
+                       (while (re-search-forward quakec--qc-function-re nil t)
                          (when (not (nth 4 (syntax-ppss)))
                            (push (match-string-no-properties 1) completions)))
                        (goto-char (point-min))
-                       (while (re-search-forward quakec-qc-method-re nil t)
+                       (while (re-search-forward quakec--qc-method-re nil t)
                          (when (not (nth 4 (syntax-ppss)))
                            (push (match-string-no-properties 1) completions)))
                        (goto-char (point-min))
-                       (while (re-search-forward quakec-global-variable-re nil t)
+                       (while (re-search-forward quakec--global-variable-re nil t)
                          (when (not (nth 4 (syntax-ppss)))
                            (push (match-string-no-properties 1) completions)))
                        (goto-char (point-min))
-                       (while (re-search-forward quakec-field-re nil t)
+                       (while (re-search-forward quakec--field-re nil t)
                          (when (not (nth 4 (syntax-ppss)))
                            (push (match-string-no-properties 1) completions)))
                        completions))))
@@ -305,7 +305,7 @@ Regexp group 1 should always be the name of the symbol.")
                  ;; not in a comment
                  (not (nth 4 (syntax-ppss)))
                  ;; this is a definition indeed
-                 (looking-at quakec-definitions-re)
+                 (looking-at quakec--definitions-re)
                  ;; definition identifier is correct
                  (equal (match-string-no-properties 1) identifier))
                 ;; got it
@@ -318,10 +318,10 @@ Argument IDENTIFIER is a symbol to lookup."
   (quakec--find-file-definitions identifier))
 
 (defvar quakec-imenu-generic-expression
-  `(("*Functions*" ,quakec-qc-function-re 1)
-    ("*Methods*" ,quakec-qc-method-re 1)
-    ("*Globals*" ,quakec-global-variable-re 1)
-    ("*Fields*" ,quakec-field-re 1))
+  `(("*Functions*" ,quakec--qc-function-re 1)
+    ("*Methods*" ,quakec--qc-method-re 1)
+    ("*Globals*" ,quakec--global-variable-re 1)
+    ("*Fields*" ,quakec--field-re 1))
   "Imenu generic expression for `quakec-mode'.")
 
 (defvar quakec-mode-syntax-table nil "Syntax table for `quakec-mode'.")
@@ -339,59 +339,68 @@ Argument IDENTIFIER is a symbol to lookup."
         syntable))
 
 (defvar quakec-font-lock-keywords
-  `((,quakec-keywords-re . font-lock-keyword-face)
-    (,quakec-basic-type-re . font-lock-type-face)
-    (,quakec-constants-re . font-lock-constant-face)
-    (,quakec-builtins-re . font-lock-builtin-face)
-    (,quakec-pragmas-re . font-lock-preprocessor-face)
-    (,quakec-global-variable-re (1 font-lock-variable-name-face)
-                                (,quakec-qc-variable-name-re nil nil (1 font-lock-variable-name-face)))
-    (,quakec-local-variable-re (1 font-lock-variable-name-face)
-                               (,quakec-qc-variable-name-re nil nil (1 font-lock-variable-name-face)))
-    (,quakec-field-re (1 font-lock-variable-name-face)
-                      (,quakec-qc-variable-name-re nil nil (1 font-lock-variable-name-face)))
-    (,quakec-qc-function-re . (1 font-lock-function-name-face ))
-    (,quakec-qc-method-re . (1 font-lock-function-name-face ))
-    (,quakec-qc-function-parameter-left-re (,quakec-qc-function-parameter-re nil nil (1 font-lock-variable-name-face)))
-    (,quakec-qc-method-parameter-left-re (,quakec-qc-function-parameter-re nil nil (1 font-lock-variable-name-face)))
-    (,quakec-qc-function-frame-params-re (2 font-lock-variable-name-face)
-                                         (3 font-lock-variable-name-face))))
+  `((,quakec--keywords-re . font-lock-keyword-face)
+    (,quakec--basic-type-re . font-lock-type-face)
+    (,quakec--constants-re . font-lock-constant-face)
+    (,quakec--builtins-re . font-lock-builtin-face)
+    (,quakec--pragmas-re . font-lock-preprocessor-face)
+    (,quakec--global-variable-re (1 font-lock-variable-name-face)
+                                 (,quakec--qc-variable-name-re nil nil (1 font-lock-variable-name-face)))
+    (,quakec--local-variable-re (1 font-lock-variable-name-face)
+                                (,quakec--qc-variable-name-re nil nil (1 font-lock-variable-name-face)))
+    (,quakec--field-re (1 font-lock-variable-name-face)
+                       (,quakec--qc-variable-name-re nil nil (1 font-lock-variable-name-face)))
+    (,quakec--qc-function-re . (1 font-lock-function-name-face ))
+    (,quakec--qc-method-re . (1 font-lock-function-name-face ))
+    (,quakec--qc-function-parameter-left-re (,quakec--qc-function-parameter-re nil nil (1 font-lock-variable-name-face)))
+    (,quakec--qc-method-parameter-left-re (,quakec--qc-function-parameter-re nil nil (1 font-lock-variable-name-face)))
+    (,quakec--qc-function-frame-params-re (2 font-lock-variable-name-face)
+                                          (3 font-lock-variable-name-face))))
 
-(defvar-local quakec-definitions-cache nil
+(defvar-local quakec--definitions-cache nil
   "A cache of QuakeC definitions in the current buffer.")
 
-(defun quakec-update-definitions ()
+(defun quakec--update-definitions ()
   "Update the cache of QuakeC definitions."
   (setq quakec-definitions-cache (make-hash-table :test 'equal))
   (save-excursion
     (goto-char (point-min))
-    (while (re-search-forward quakec-definitions-re nil t)
+    (while (re-search-forward quakec--definitions-re nil t)
       (let ((name (match-string-no-properties 1))
             (signature (match-string 0)))
         (puthash name signature quakec-definitions-cache)))))
 
-(defun quakec-eldoc-function ()
+(defun quakec--eldoc-function ()
   "Show a definition string for the current function or method at
 point."
   (let ((symbol-name (thing-at-point 'symbol 'no-props)))
     (when symbol-name
       ;; try cache first, then update and try again
-      (or (gethash symbol-name quakec-definitions-cache)
+      (or (gethash symbol-name quakec--definitions-cache)
           (progn
-            (quakec-update-definitions)
-            (gethash symbol-name quakec-definitions-cache))))))
+            (quakec--update-definitions)
+            (gethash symbol-name quakec--definitions-cache))))))
 
-(defun quakec-after-save-hook ()
+(defun quakec--after-save-hook ()
   "Update QuakeC definitions cache after saving the file."
   (when (eq major-mode 'quakec-mode)
-    (quakec-update-definitions)))
+    (quakec--update-definitions)))
 
-(defun quakec-which-func ()
+(defun quakec--which-func ()
   "Find the current function name in a QuakeC buffer."
   (save-excursion
-    (beginning-of-defun)
-    (when (looking-at quakec-qc-function-re)
-      (match-string-no-properties 1))))
+    (let ((original-position (point)))
+      ;; Move to the beginning of the current defun
+      (beginning-of-defun)
+      ;; Check if we are within a function body
+      (if (and (or (looking-at quakec--qc-function-re)
+                   (looking-at quakec--qc-method-re)
+                   (looking-at quakec--qc-method-re))
+               (save-match-data
+                 (end-of-defun)
+                 (<= original-position (point))))
+          (match-string-no-properties 1)
+        nil))))
 
 (defun quakec-find-project-root ()
   "Find the root of the QuakeC project, indicated by the
@@ -509,9 +518,9 @@ point."
                '(gmqcc "^\\(.*\\):\\([0-9]+\\):\\([0-9]+\\): \\(.*\\): \\(.*\\)$" 1 2 3))
 
   ;; Eldoc setup
-  (add-hook 'after-save-hook #'quakec-after-save-hook nil 'local)
-  (setq-local eldoc-documentation-function #'quakec-eldoc-function)
-  (quakec-update-definitions))
+  (add-hook 'after-save-hook #'quakec--after-save-hook nil 'local)
+  (setq-local eldoc-documentation-function #'quakec--eldoc-function)
+  (quakec--update-definitions))
 
 (provide 'quakec-mode)
 

@@ -129,6 +129,14 @@ header is updated with the correct information and written at the beginning of t
 
     - [X] methods
 
+  - [-] unit testing
+
+    - [X] find-definitions
+
+    - [X] which-func
+
+    - [ ] eldoc
+
   - [X] which-func support
 
   - [-] syntax highlighting
@@ -171,17 +179,17 @@ header is updated with the correct information and written at the beginning of t
 
     - [X] gmqcc
 
-    - [ ] use the root finding function to always kick off compilation in the project root
+    - [X] use the root finding function to always kick off compilation in the project root
 
     - [ ] qcc
 
     - [ ] others?
 
-  - [ ] flymake
+  - [-] flymake
 
-    - [ ] FTEQCC
+    - [X] FTEQCC
 
-    - [ ] GMQCC
+    - [X] GMQCC
 
     - [ ] qcc
 
@@ -191,7 +199,7 @@ header is updated with the correct information and written at the beginning of t
 
     - [ ] global definition based on progs.src or something
 
-  - [ ] reuse definition cache between xref and eldoc
+  - [ ] reuse definition cache between xref and eldoc (and imenu?)
 
   - [ ] customisation options (compiler, etc)
 
@@ -212,8 +220,6 @@ header is updated with the correct information and written at the beginning of t
     - [ ] emacs lisp conventions for variables and constants?
 
     - [ ] eval-when-compile for rx
-
-  - [ ] unit testing for code nav, font-lock, syntax, compilation
 
   - [ ] package tool (cask or something)
 
