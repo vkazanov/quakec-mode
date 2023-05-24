@@ -59,4 +59,8 @@ Example setup:
 
   - Classic [[https://pages.cs.wisc.edu/~jeremyp/quake/quakec/quakec.pdf][QuakeC reference manual]]
 
-  - [[https://www.fteqcc.org/dl/fteqcc_manual.txt][FTEQCC manual]], a modern QuakeC compiler
+  - [[https://www.fteqcc.org/dl/fteqcc_manual.txt][FTEQCC manual]], a popular QuakeC compiler
+
+  - [[https://graphitemaster.github.io/gmqcc/][GMQCC manual]], a deeply modernised standalone QuakeC compiler
+
+  - [[https://github.com/id-Software/Quake-Tools/tree/master/qcc][QCC]], the original QuakeC compiler, complete with all the bugs
