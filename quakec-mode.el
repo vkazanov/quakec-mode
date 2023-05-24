@@ -495,7 +495,8 @@ if not in a project."
 (defun quakec-setup-flymake-gmqcc-backend ()
   (add-hook 'flymake-diagnostic-functions 'quakec-flymake-gmqcc nil t))
 
-
+;; TODO: definitely needs rework, check how other modes go about
+;; things here
 ;;;###autoload
 (define-derived-mode quakec-mode c-mode "QuakeC"
   "Major mode for editing QuakeC files."

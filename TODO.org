@@ -129,7 +129,7 @@ header is updated with the correct information and written at the beginning of t
 
     - [X] methods
 
-  - [-] unit testing
+  - [X] unit testing
 
     - [X] find-definitions
 
@@ -137,7 +137,7 @@ header is updated with the correct information and written at the beginning of t
 
     - [X] eldoc
 
-    - [ ] utils, i.e. rel path, project root, etc
+    - [X] rel path, project root
 
   - [X] which-func support
 
@@ -187,6 +187,8 @@ header is updated with the correct information and written at the beginning of t
 
     - [ ] others?
 
+  - [X] packaging tool - cask
+
   - [-] flymake
 
     - [X] FTEQCC
@@ -201,13 +203,15 @@ header is updated with the correct information and written at the beginning of t
 
     - [ ] global definition based on progs.src or something
 
+  - [ ] src file support?
+
+  - [ ]
+
   - [ ] reuse definition cache between xref and eldoc (and imenu?)
 
   - [ ] customisation options (compiler, etc)
 
-  - [ ] publish a package
-
-  - [ ] linting?
+  - [ ] publish the package
 
   - [ ] c-style functions? better dialect support?
 
@@ -223,8 +227,4 @@ header is updated with the correct information and written at the beginning of t
 
     - [ ] eval-when-compile for rx
 
-  - [ ] package tool (cask or something)
-
   - [ ] global completion
-
-  - [ ] src file support?
