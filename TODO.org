@@ -135,7 +135,9 @@ header is updated with the correct information and written at the beginning of t
 
     - [X] which-func
 
-    - [ ] eldoc
+    - [X] eldoc
+
+    - [ ] utils, i.e. rel path, project root, etc
 
   - [X] which-func support
 

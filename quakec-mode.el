@@ -362,13 +362,13 @@ Argument IDENTIFIER is a symbol to lookup."
 
 (defun quakec--update-definitions ()
   "Update the cache of QuakeC definitions."
-  (setq quakec-definitions-cache (make-hash-table :test 'equal))
+  (setq quakec--definitions-cache (make-hash-table :test 'equal))
   (save-excursion
     (goto-char (point-min))
     (while (re-search-forward quakec--definitions-re nil t)
       (let ((name (match-string-no-properties 1))
             (signature (match-string 0)))
-        (puthash name signature quakec-definitions-cache)))))
+        (puthash name signature quakec--definitions-cache)))))
 
 (defun quakec--eldoc-function ()
   "Show a definition string for the current function or method at
