@@ -402,14 +402,20 @@ point."
           (match-string-no-properties 1)
         nil))))
 
-(defun quakec-find-project-root ()
+(defun quakec--find-project-root ()
   "Find the root of the QuakeC project, indicated by the
-`quakec-project-source' (`progs.src') file."
-  (locate-dominating-file (or (buffer-file-name) default-directory) quakec-project-source))
+`quakec-project-source' (`progs.src') file. Signal a user error
+if not in a project."
+  (let ((root (locate-dominating-file
+               (or (buffer-file-name) default-directory)
+               quakec-project-source)))
+    (unless root
+      (user-error "Not in a QuakeC project"))
+    root))
 
-(defun quakec-relative-path (fname)
+(defun quakec--relative-path (fname)
   "Create a relative path for FNAME with respect to the project root."
-  (file-relative-name fname (quakec-find-project-root)))
+  (file-relative-name fname (quakec--find-project-root)))
 
 (defvar quakec-flymake-fteqcc-cmd '("fteqcc" "-Wall"))
 (defun quakec-flymake-fteqcc-build-diagnostic-re (fpath)
@@ -437,7 +443,7 @@ point."
    into diags
    finally (funcall report-fn diags)))
 
-(defun quakec-make-flymake-backend (compiler-exec command diag-re-builder)
+(defun quakec--make-flymake-backend (compiler-exec command diag-re-builder)
   "Create a new flymake backend for a specific QuakeC compiler."
   (lambda (report-fn &rest _args)
     ;; Make sure a compiler is available
@@ -450,9 +456,9 @@ point."
 
     ;; Launch the process
     (let* ((sourcebuf (current-buffer))
-           (source-path (quakec-relative-path (buffer-file-name sourcebuf)))
+           (source-path (quakec--relative-path (buffer-file-name sourcebuf)))
            (diag-re (funcall diag-re-builder source-path))
-           (default-directory (quakec-find-project-root)))
+           (default-directory (quakec--find-project-root)))
       (save-restriction
         (widen)
         (setq
@@ -476,10 +482,10 @@ point."
         (process-send-eof quakec--flymake-proc)))))
 
 (defvar quakec-flymake-fteqcc
-  (funcall 'quakec-make-flymake-backend "fteqcc" quakec-flymake-fteqcc-cmd 'quakec-flymake-fteqcc-build-diagnostic-re))
+  (funcall 'quakec--make-flymake-backend "fteqcc" quakec-flymake-fteqcc-cmd 'quakec-flymake-fteqcc-build-diagnostic-re))
 
 (defvar quakec-flymake-gmqcc
-  (funcall 'quakec-make-flymake-backend "gmqcc" quakec-flymake-gmqcc-cmd 'quakec-flymake-gmqcc-build-diagnostic-re))
+  (funcall 'quakec--make-flymake-backend "gmqcc" quakec-flymake-gmqcc-cmd 'quakec-flymake-gmqcc-build-diagnostic-re))
 
 (defun quakec-setup-flymake-fteqcc-backend ()
   (add-hook 'flymake-diagnostic-functions 'quakec-flymake-fteqcc nil t))
