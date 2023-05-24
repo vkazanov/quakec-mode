@@ -203,9 +203,9 @@ header is updated with the correct information and written at the beginning of t
 
     - [ ] global definition based on progs.src or something
 
-  - [ ] src file support?
+  - [ ] setup Elsa
 
-  - [ ]
+  - [ ] src file support?
 
   - [ ] reuse definition cache between xref and eldoc (and imenu?)
 

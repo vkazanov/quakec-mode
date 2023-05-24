@@ -4,4 +4,7 @@
 (package-file "quakec-mode.el")
 
 (development
- (depends-on "ert-runner"))
+ (depends-on "ert-runner")
+ (depends-on "lgr") ;; for elsa
+ (depends-on "async") ;; for elsa
+ (depends-on "elsa"))
