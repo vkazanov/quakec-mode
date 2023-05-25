@@ -192,7 +192,11 @@ header is updated with the correct information and written at the beginning of t
 
     - [ ] suggest a default compile command
 
-    - [ ] use the root finding function to always kick off compilation in the project root
+      - [ ] use the root finding function to always kick off compilation in the project root
+
+        see the discussion: https://stackoverflow.com/questions/9037833/how-to-set-the-default-directory-of-compilation-in-emacs
+
+      - [ ] provide a specilised compilation function
 
     - [ ] qcc
 

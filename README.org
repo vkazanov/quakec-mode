@@ -52,7 +52,7 @@ Example setup:
     ;; link the extension
     :mode "\\.qc\\'"
     ;; run our configration
-    :hook (quakec-mode . vlk-quakec-mode-hook))
+    :hook (quakec-mode . my-quakec-mode-hook))
 #+end_src
 
 * Reference
