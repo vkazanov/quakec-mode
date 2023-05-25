@@ -147,7 +147,15 @@ header is updated with the correct information and written at the beginning of t
 
       - [X] keywords
 
-      - [ ] literals
+      - [ ] literals, especially vectors
+
+        - something non-trivial going on because of how cc-mode expects things to be,
+          can't just use modify-syntax-entry
+
+        - removing cc-mode inheritance removes a lot of niceness (e.g. beginning-of-defun and
+          indentation)
+
+        - just use font-lock to find these? what about navigation?
 
   - [X] which-func support
 

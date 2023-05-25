@@ -334,20 +334,6 @@ Argument IDENTIFIER is a symbol to lookup."
     ("*Fields*" ,quakec--field-re 1))
   "Imenu generic expression for `quakec-mode'.")
 
-(defvar quakec-mode-syntax-table nil "Syntax table for `quakec-mode'.")
-
-(setq quakec-mode-syntax-table
-      (let ((syntable (make-syntax-table)))
-        ;; C-style comments (`//' and `/* ... */')
-        (modify-syntax-entry ?/ ". 124b" syntable)
-        (modify-syntax-entry ?* ". 23" syntable)
-        (modify-syntax-entry ?\n "> b" syntable)
-
-        ;; Strings
-        (modify-syntax-entry ?\" "\"" syntable)
-
-        syntable))
-
 (defvar quakec--font-lock-keywords
   `((,quakec--keywords-re . font-lock-keyword-face)
     (,quakec--basic-type-re . font-lock-type-face)
@@ -511,7 +497,6 @@ respect to the project root."
   ;; Basic syntax highlighting
   (setq-local comment-start "// ")
   (setq-local comment-end "")
-  (setq-local syntax-table quakec-mode-syntax-table)
 
   ;; And font-locking
   (setq font-lock-defaults '((quakec--font-lock-keywords)))

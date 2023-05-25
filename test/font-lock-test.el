@@ -97,4 +97,16 @@ vector Variable3;
            'quakec-mode '("Variable1" "Variable2" "Variable3" "Field1" "Field2")
            'font-lock-variable-name-face)))
 
+;; (ert-deftest font-lock-literals-test ()
+;;   (should (assess-face-at= "
+;; 11
+;; 2.2
+;; -333
+;; '444 55.5 -666'
+;; \"string\"
+;; "
+;;                            'quakec-mode
+;;                            '("11" "2.2" "-333" "444" "string")
+;;                            )))
+
 ;;; font-lock-test.el ends here
