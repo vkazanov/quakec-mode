@@ -190,7 +190,9 @@ header is updated with the correct information and written at the beginning of t
 
     - [X] gmqcc
 
-    - [X] use the root finding function to always kick off compilation in the project root
+    - [ ] suggest a default compile command
+
+    - [ ] use the root finding function to always kick off compilation in the project root
 
     - [ ] qcc
 

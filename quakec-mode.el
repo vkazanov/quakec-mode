@@ -423,9 +423,12 @@ if not in a project."
       (user-error "Not in a QuakeC project"))
     root))
 
-(defun quakec--relative-path (fname)
-  "Create a relative path for FNAME with respect to the project root."
-  (file-relative-name fname (quakec--find-project-root)))
+(defun quakec--relative-path (&optional fpath)
+  "Create a relative path for current buffer's file or FPATH with
+respect to the project root."
+  (unless fpath
+    (setq fpath (buffer-file-name (current-buffer))))
+  (file-relative-name fpath (quakec--find-project-root)))
 
 (defun quakec--flymake-fteqcc-build-diagnostic-re (fpath)
   (format "^\\(?:%s\\|-\\):\\([0-9]+\\): \\(.*\\)$" (regexp-quote fpath)))
@@ -462,7 +465,7 @@ if not in a project."
 
     ;; Launch the process
     (let* ((sourcebuf (current-buffer))
-           (source-path (quakec--relative-path (buffer-file-name sourcebuf)))
+           (source-path (quakec--relative-path))
            (diag-re (funcall diag-re-builder source-path))
            (default-directory (quakec--find-project-root)))
       (save-restriction
