@@ -178,11 +178,21 @@ header is updated with the correct information and written at the beginning of t
       - [X] frame functions
 
 
+  - [X] packaging tool - cask
+
   - [-] xref
 
     - [X] local definitions
 
     - [ ] wider definition search (grep-like or something?)
+
+    - [ ] good example as well: js-mode (derived from espresso-mode i used to use),
+      especially the way js-find-symbol works with all known symbols
+
+    - [ ] https://github.com/js-emacs/xref-js2/blob/master/xref-js2.el - interesting
+      hybrid ast/ag global symbol search
+
+    - [ ] similar to js-mode js2-mode does symbol search in all open buffers
 
   - [-] compilation support for popular compilers
 
@@ -198,11 +208,12 @@ header is updated with the correct information and written at the beginning of t
 
       - [ ] provide a specilised compilation function
 
+    - [ ] good example as well: js-mode (derived from espresso-mode i used to use),
+      especially the way js-find-symbol works with all known symbols
+
     - [ ] qcc
 
     - [ ] others?
-
-  - [X] packaging tool - cask
 
   - [-] flymake
 
@@ -218,11 +229,16 @@ header is updated with the correct information and written at the beginning of t
 
     - [ ] global definition based on progs.src or something
 
+  - [ ] see coffee-mode for how to provide customize interfaces, compilation commands,
+    setup hideshow minor mode, etc
+
   - [ ] setup Elsa
 
   - [ ] src file support?
 
   - [ ] reuse definition cache between xref and eldoc (and imenu?)
+
+  - [ ] hideshow
 
   - [ ] customisation options (compiler, etc)
 
