@@ -49,7 +49,11 @@
 
 (defvar quakec--builtins-re
   (regexp-opt
-   '(;; Basic math
+   '(
+     ;;  Major globals
+     "world" "self" "other" "time"
+
+     ;; Basic math
      "anglemod" "ceil" "fabs" "floor" "ftos" "rint" "random"
 
      ;; Vector math
@@ -94,7 +98,7 @@
      "main" "StartFrame"
 
      ;; entity functions and relevant fields
-     "self" "nextthink" "think" "touch" "use" "blocked")
+     "nextthink" "think" "touch" "use" "blocked")
    'symbols)
   "A regexp matching builtin functions.")
 
@@ -344,7 +348,7 @@ Argument IDENTIFIER is a symbol to lookup."
 
         syntable))
 
-(defvar quakec-font-lock-keywords
+(defvar quakec--font-lock-keywords
   `((,quakec--keywords-re . font-lock-keyword-face)
     (,quakec--basic-type-re . font-lock-type-face)
     (,quakec--constants-re . font-lock-constant-face)
@@ -507,7 +511,7 @@ if not in a project."
   (setq-local syntax-table quakec-mode-syntax-table)
 
   ;; And font-locking
-  (setq font-lock-defaults '((quakec-font-lock-keywords)))
+  (setq font-lock-defaults '((quakec--font-lock-keywords)))
 
   ;; Imenu
   (setq imenu-case-fold-search t)

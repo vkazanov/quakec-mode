@@ -129,7 +129,7 @@ header is updated with the correct information and written at the beginning of t
 
     - [X] methods
 
-  - [X] unit testing
+  - [-] unit testing
 
     - [X] find-definitions
 
@@ -139,9 +139,19 @@ header is updated with the correct information and written at the beginning of t
 
     - [X] rel path, project root
 
+    - [-] font-lock
+
+      - [X] functions/funparams
+
+      - [X] variables
+
+      - [X] keywords
+
+      - [ ] literals
+
   - [X] which-func support
 
-  - [-] syntax highlighting
+  - [X] syntax highlighting
 
     - [X] comments (both cpp/c style)
 
@@ -167,7 +177,6 @@ header is updated with the correct information and written at the beginning of t
 
       - [X] frame functions
 
-    - [ ] check all literals
 
   - [-] xref
 
