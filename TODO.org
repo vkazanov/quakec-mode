@@ -260,7 +260,7 @@ header is updated with the correct information and written at the beginning of t
 
   - [ ] extract specialised faces to be used for highlighting
 
-  - [ ] src file support?
+  - [ ] src file support? generic mode?
 
   - [ ] reuse definition cache between xref and eldoc (and imenu?)
 
