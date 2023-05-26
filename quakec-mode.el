@@ -557,8 +557,7 @@ respect to the project root."
   (interactive)
   (let ((default-directory (quakec--find-project-root))
         (compile-cmd (compilation-read-command
-                      (or (car compilation-arguments)
-                          quakec-default-compile-command))))
+                      quakec-default-compile-command)))
     (compile compile-cmd)))
 
 ;;;###autoload
