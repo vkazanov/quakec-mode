@@ -560,6 +560,7 @@ respect to the project root."
                       quakec-default-compile-command)))
     (compile compile-cmd)))
 
+;; TODO: test when there was no prior quakec-compile run
 ;;;###autoload
 (defun quakec-recompile ()
   "Recompile a QuakeC project."
@@ -570,6 +571,11 @@ respect to the project root."
 ;;
 
 
+;; TODO: c-mode brings A LOT of cruft. E.g., some of the tweaks
+;; introduced in the c-mode hook by users might not be relevant for
+;; quakec-mode. Maybe worth reimplementing half of it (syntax,
+;; indenting, etc) in a saner way.
+;;
 ;;;###autoload
 (define-derived-mode quakec-mode c-mode "QuakeC"
   "Major mode for editing QuakeC files."
