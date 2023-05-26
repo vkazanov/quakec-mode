@@ -41,6 +41,10 @@
 
 (defvar-local quakec--flymake-proc nil)
 
+;;
+;;; Syntax highlighting and (limited) parsing regexps
+;;
+
 (defvar quakec--pragmas-re
   (regexp-opt
    '("$frame" "$framegroupstart" "$framegroupend" "$flags" "$base" "$cd" "$modelname" "$origin" "$scale" "$skin")
@@ -265,6 +269,34 @@ something like \".void(\".")
 
 Regexp group 1 should always be the name of the symbol.")
 
+;;
+;;; Syntax highlighting (font-lock)
+;;
+
+(defvar quakec--font-lock-keywords
+  `((,quakec--keywords-re . font-lock-keyword-face)
+    (,quakec--basic-type-re . font-lock-type-face)
+    (,quakec--constants-re . font-lock-constant-face)
+    (,quakec--builtins-re . font-lock-builtin-face)
+    (,quakec--pragmas-re . font-lock-preprocessor-face)
+    (,quakec--global-variable-re (1 font-lock-variable-name-face)
+                                 (,quakec--qc-variable-name-re nil nil (1 font-lock-variable-name-face)))
+    (,quakec--local-variable-re (1 font-lock-variable-name-face)
+                                (,quakec--qc-variable-name-re nil nil (1 font-lock-variable-name-face)))
+    (,quakec--field-re (1 font-lock-variable-name-face)
+                       (,quakec--qc-variable-name-re nil nil (1 font-lock-variable-name-face)))
+    (,quakec--qc-function-re . (1 font-lock-function-name-face ))
+    (,quakec--qc-method-re . (1 font-lock-function-name-face ))
+    (,quakec--qc-function-parameter-left-re (,quakec--qc-function-parameter-re nil nil (1 font-lock-variable-name-face)))
+    (,quakec--qc-method-parameter-left-re (,quakec--qc-function-parameter-re nil nil (1 font-lock-variable-name-face)))
+    (,quakec--qc-function-frame-params-re (2 font-lock-variable-name-face)
+                                          (3 font-lock-variable-name-face))))
+
+
+;;
+;;; Completion-at-point backend
+;;
+
 (defun quakec-completion-at-point ()
   "Provide completion for local QuakeC symbols."
   (let (symbol-bounds symbols-start symbols-end complete-function)
@@ -295,6 +327,10 @@ Regexp group 1 should always be the name of the symbol.")
       (list symbols-start symbols-end
             (completion-table-dynamic complete-function)
             :exclusive 'no))))
+
+;;
+;;; Xref (definitions lookup) support
+;;
 
 (defun quakec-xref-backend ()
   "File-local QuakeC Xref backend."
@@ -327,31 +363,20 @@ Regexp group 1 should always be the name of the symbol.")
 Argument IDENTIFIER is a symbol to lookup."
   (quakec--find-file-definitions identifier))
 
-(defvar quakec-imenu-generic-expression
+;;
+;;; Imenu
+;;
+
+(defvar quakec--imenu-generic-expression
   `(("*Functions*" ,quakec--qc-function-re 1)
     ("*Methods*" ,quakec--qc-method-re 1)
     ("*Globals*" ,quakec--global-variable-re 1)
     ("*Fields*" ,quakec--field-re 1))
   "Imenu generic expression for `quakec-mode'.")
 
-(defvar quakec--font-lock-keywords
-  `((,quakec--keywords-re . font-lock-keyword-face)
-    (,quakec--basic-type-re . font-lock-type-face)
-    (,quakec--constants-re . font-lock-constant-face)
-    (,quakec--builtins-re . font-lock-builtin-face)
-    (,quakec--pragmas-re . font-lock-preprocessor-face)
-    (,quakec--global-variable-re (1 font-lock-variable-name-face)
-                                 (,quakec--qc-variable-name-re nil nil (1 font-lock-variable-name-face)))
-    (,quakec--local-variable-re (1 font-lock-variable-name-face)
-                                (,quakec--qc-variable-name-re nil nil (1 font-lock-variable-name-face)))
-    (,quakec--field-re (1 font-lock-variable-name-face)
-                       (,quakec--qc-variable-name-re nil nil (1 font-lock-variable-name-face)))
-    (,quakec--qc-function-re . (1 font-lock-function-name-face ))
-    (,quakec--qc-method-re . (1 font-lock-function-name-face ))
-    (,quakec--qc-function-parameter-left-re (,quakec--qc-function-parameter-re nil nil (1 font-lock-variable-name-face)))
-    (,quakec--qc-method-parameter-left-re (,quakec--qc-function-parameter-re nil nil (1 font-lock-variable-name-face)))
-    (,quakec--qc-function-frame-params-re (2 font-lock-variable-name-face)
-                                          (3 font-lock-variable-name-face))))
+;;
+;;; Eldoc
+;;
 
 (defvar-local quakec--definitions-cache nil
   "A cache of QuakeC definitions in the current buffer.")
@@ -382,6 +407,10 @@ point."
   (when (eq major-mode 'quakec-mode)
     (quakec--update-definitions)))
 
+;;
+;;; Which function mode support
+;;
+
 (defun quakec--which-func ()
   "Find the current function name in a QuakeC buffer."
   (save-excursion
@@ -397,6 +426,10 @@ point."
                  (<= original-position (point))))
           (match-string-no-properties 1)
         nil))))
+
+;;
+;;; Project utils
+;;
 
 (defun quakec--find-project-root ()
   "Find the root of the QuakeC project, indicated by the
@@ -415,6 +448,10 @@ respect to the project root."
   (unless fpath
     (setq fpath (buffer-file-name (current-buffer))))
   (file-relative-name fpath (quakec--find-project-root)))
+
+;;
+;;; On-the-fly syntax checking
+;;
 
 (defun quakec--flymake-fteqcc-build-diagnostic-re (fpath)
   (format "^\\(?:%s\\|-\\):\\([0-9]+\\): \\(.*\\)$" (regexp-quote fpath)))
@@ -488,8 +525,26 @@ respect to the project root."
 (defun quakec-setup-flymake-gmqcc-backend ()
   (add-hook 'flymake-diagnostic-functions 'quakec-flymake-gmqcc nil t))
 
-;; TODO: definitely needs rework, check how other modes go about
-;; things here
+
+;;
+;;; Compilation mode support
+;;
+
+(eval-after-load 'compile
+  '(progn
+     ;; compile warning highlighting for FTEQCC
+     (add-to-list 'compilation-error-regexp-alist 'fteqcc)
+     (add-to-list 'compilation-error-regexp-alist-alist
+                  '(fteqcc "^\\(.*\\)(\\([0-9]+\\)):\\(.*\\)$" 1 2))
+
+     ;; compiler warning highlighting for GMQCC
+     (add-to-list 'compilation-error-regexp-alist 'gmqcc)
+     (add-to-list 'compilation-error-regexp-alist-alist
+                  '(gmqcc "^\\(.*\\):\\([0-9]+\\):\\([0-9]+\\): \\(.*\\): \\(.*\\)$" 1 2 3))))
+
+;;;
+
+
 ;;;###autoload
 (define-derived-mode quakec-mode c-mode "QuakeC"
   "Major mode for editing QuakeC files."
@@ -503,20 +558,10 @@ respect to the project root."
 
   ;; Imenu
   (setq imenu-case-fold-search t)
-  (setq imenu-generic-expression quakec-imenu-generic-expression)
+  (setq imenu-generic-expression quakec--imenu-generic-expression)
 
   ;; which-function support
-  (add-hook 'which-func-functions #'quakec-which-func nil 'local)
-
-  ;; compile warning highlighting for FTEQCC
-  (add-to-list 'compilation-error-regexp-alist 'fteqcc)
-  (add-to-list 'compilation-error-regexp-alist-alist
-               '(fteqcc "^\\(.*\\)(\\([0-9]+\\)):\\(.*\\)$" 1 2))
-
-  ;; compiler warning highlighting for GMQCC
-  (add-to-list 'compilation-error-regexp-alist 'gmqcc)
-  (add-to-list 'compilation-error-regexp-alist-alist
-               '(gmqcc "^\\(.*\\):\\([0-9]+\\):\\([0-9]+\\): \\(.*\\): \\(.*\\)$" 1 2 3))
+  (add-hook 'which-func-functions #'quakec--which-func nil 'local)
 
   ;; Eldoc setup
   (add-hook 'after-save-hook #'quakec--after-save-hook nil 'local)
