@@ -1,3 +1,4 @@
+
 * Design considerations (thanks, Discord Quake Remastered!)
 
  - quake directory structure review: https://www.slipseer.com/index.php?threads/understanding-your-quake-directory-installing-custom-content.174/
@@ -209,15 +210,15 @@ header is updated with the correct information and written at the beginning of t
 
     - [X] gmqcc
 
-    - [ ] suggest a default compile command
+    - [X] suggest a default compile command
 
-    - [ ] use the root finding function to always kick off compilation in the project root
+    - [X] use the root finding function to always kick off compilation in the project root
 
       see the discussion: https://stackoverflow.com/questions/9037833/how-to-set-the-default-directory-of-compilation-in-emacs
 
-    - [ ] provide a specilised compilation function
+    - [X] provide a specilised compilation function
 
-    - [ ] eval-after-load when injecting compilation-mode regexps
+    - [X] eval-after-load when injecting compilation-mode regexps
 
     - [ ] qcc
 

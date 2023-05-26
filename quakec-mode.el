@@ -35,6 +35,9 @@
 (defvar quakec-gmqcc-compile-command "gmqcc -Wall -nocolor "
   "An GMQCC compile command for QuakeC.")
 
+(defvar quakec-default-compile-command quakec-fteqcc-compile-command
+  "A command to use for compiling QuakeC project.")
+
 (defvar quakec-flymake-fteqcc-cmd '("fteqcc" "-Wall"))
 
 (defvar quakec-flymake-gmqcc-cmd '("gmqcc" "-Wall" "-nocolor" "-std=fteqcc"))
@@ -519,11 +522,13 @@ respect to the project root."
 (defvar quakec-flymake-gmqcc
   (funcall 'quakec--make-flymake-backend "gmqcc" quakec-flymake-gmqcc-cmd 'quakec--flymake-gmqcc-build-diagnostic-re))
 
+;;;###autoload
 (defun quakec-setup-flymake-fteqcc-backend ()
-  (add-hook 'flymake-diagnostic-functions 'quakec-flymake-fteqcc nil t))
+  (add-hook 'flymake-diagnostic-functions quakec-flymake-fteqcc nil t))
 
+;;;###autoload
 (defun quakec-setup-flymake-gmqcc-backend ()
-  (add-hook 'flymake-diagnostic-functions 'quakec-flymake-gmqcc nil t))
+  (add-hook 'flymake-diagnostic-functions quakec-flymake-gmqcc nil t))
 
 
 ;;
@@ -542,7 +547,28 @@ respect to the project root."
      (add-to-list 'compilation-error-regexp-alist-alist
                   '(gmqcc "^\\(.*\\):\\([0-9]+\\):\\([0-9]+\\): \\(.*\\): \\(.*\\)$" 1 2 3))))
 
-;;;
+;;
+;;; Compile commands
+;;
+
+;;;###autoload
+(defun quakec-compile (&optional args)
+  "Compile a QuakeC project."
+  (interactive)
+  (let ((default-directory (quakec--find-project-root))
+        (compile-cmd (compilation-read-command
+                      (or (car compilation-arguments)
+                          quakec-default-compile-command))))
+    (compile compile-cmd)))
+
+;;;###autoload
+(defun quakec-recompile ()
+  "Recompile a QuakeC project."
+  (interactive)
+  (let ((default-directory compilation-directory))
+    (recompile)))
+
+;;
 
 
 ;;;###autoload
