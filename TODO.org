@@ -185,14 +185,13 @@ header is updated with the correct information and written at the beginning of t
 
       - [X] frame functions
 
-
   - [X] packaging tool - cask
 
   - [-] xref
 
     - [X] local definitions
 
-    - [ ] wider definition search (grep-like or something?)
+    - [ ] wider definition search (hybrid with grep-like or something?)
 
     - [ ] good example as well: js-mode (derived from espresso-mode i used to use),
       especially the way js-find-symbol works with all known symbols
@@ -204,20 +203,21 @@ header is updated with the correct information and written at the beginning of t
 
   - [-] compilation support for popular compilers
 
+    - consult the rust-mode code for good approach to formatting
+
     - [X] FTEQCC
 
     - [X] gmqcc
 
     - [ ] suggest a default compile command
 
-      - [ ] use the root finding function to always kick off compilation in the project root
+    - [ ] use the root finding function to always kick off compilation in the project root
 
-        see the discussion: https://stackoverflow.com/questions/9037833/how-to-set-the-default-directory-of-compilation-in-emacs
+      see the discussion: https://stackoverflow.com/questions/9037833/how-to-set-the-default-directory-of-compilation-in-emacs
 
-      - [ ] provide a specilised compilation function
+    - [ ] provide a specilised compilation function
 
-    - [ ] good example as well: js-mode (derived from espresso-mode i used to use),
-      especially the way js-find-symbol works with all known symbols
+    - [ ] eval-after-load when injecting compilation-mode regexps
 
     - [ ] qcc
 
@@ -240,7 +240,25 @@ header is updated with the correct information and written at the beginning of t
   - [ ] see coffee-mode for how to provide customize interfaces, compilation commands,
     setup hideshow minor mode, etc
 
+  - [ ] advanced support
+
+    - [ ] full fteqcc dialect
+
+      - [ ] raw language
+
+      - [ ] preprocessing?
+
+    - [ ] full gmqcc dialect
+
+      - [ ] language
+
+      - [ ] preprocessing?
+
   - [ ] setup Elsa
+
+  - [ ] defcustom for key variables/parameters
+
+  - [ ] extract specialised faces to be used for highlighting
 
   - [ ] src file support?
 
