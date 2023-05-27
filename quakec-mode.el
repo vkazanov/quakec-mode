@@ -26,21 +26,44 @@
 (require 'cl-lib)
 (require 'xref)
 
-(defvar quakec-project-source "progs.src"
-  "Project root file.")
-
-(defvar quakec-fteqcc-compile-command "fteqcc -Wall "
+(defconst quakec-fteqcc-compile-command "fteqcc -Wall "
   "An FTEQCC compile command for QuakeC.")
 
-(defvar quakec-gmqcc-compile-command "gmqcc -Wall -nocolor "
+(defconst quakec-gmqcc-compile-command "gmqcc -Wall -nocolor "
   "An GMQCC compile command for QuakeC.")
 
-(defvar quakec-default-compile-command quakec-fteqcc-compile-command
-  "A command to use for compiling QuakeC project.")
+;;
+;;; Customization
+;;
 
-(defvar quakec-flymake-fteqcc-cmd '("fteqcc" "-Wall"))
+(defgroup quakec-mode nil
+  "Support for QuakeC code."
+  :link '(url-link "https://github.com/vkazanov/quakec-mode")
+  :group 'languages)
 
-(defvar quakec-flymake-gmqcc-cmd '("gmqcc" "-Wall" "-nocolor" "-std=fteqcc"))
+(defcustom quakec-project-source "progs.src"
+  "QuakeC project root file to use for location of a root
+directory."
+  :type 'string
+  :group 'quakec-mode)
+
+
+(defcustom quakec-default-compile-command quakec-fteqcc-compile-command
+  "A default command to use for compiling QuakeC project."
+  :type 'string
+  :group 'quakec-mode)
+
+(defcustom quakec-flymake-fteqcc-cmd '("fteqcc" "-Wall")
+  "A list of strings to use as a command when running the FTEQCC
+flymake backend"
+  :type '(repeat string)
+  :group 'quakec-mode)
+
+(defcustom quakec-flymake-gmqcc-cmd '("gmqcc" "-Wall" "-nocolor" "-std=fteqcc")
+  "A list of strings to use as a command when running the QMQCC
+flymake backend"
+  :type '(repeat string)
+  :group 'quakec-mode)
 
 ;;
 ;;; Syntax highlighting and (limited) parsing regexps
@@ -525,11 +548,11 @@ respect to the project root."
 
 ;;;###autoload
 (defun quakec-setup-flymake-fteqcc-backend ()
-  (add-hook 'flymake-diagnostic-functions quakec-flymake-fteqcc nil t))
+  (add-hook 'flymake-diagnostic-functions quakec-flymake-fteqcc))
 
 ;;;###autoload
 (defun quakec-setup-flymake-gmqcc-backend ()
-  (add-hook 'flymake-diagnostic-functions quakec-flymake-gmqcc nil t))
+  (add-hook 'flymake-diagnostic-functions quakec-flymake-gmqcc))
 
 
 ;;
@@ -561,7 +584,6 @@ respect to the project root."
                       quakec-default-compile-command)))
     (compile compile-cmd)))
 
-;; TODO: test when there was no prior quakec-compile run
 ;;;###autoload
 (defun quakec-recompile ()
   "Recompile a QuakeC project."
@@ -581,6 +603,7 @@ respect to the project root."
 ;;;###autoload
 (define-derived-mode quakec-mode c-mode "QuakeC"
   "Major mode for editing QuakeC files."
+  :group 'quakec-mode
 
   ;; Basic syntax highlighting
   (setq-local comment-start "// ")

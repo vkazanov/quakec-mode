@@ -186,6 +186,8 @@ header is updated with the correct information and written at the beginning of t
 
       - [X] frame functions
 
+  - [X] defcustom for key variables/parameters
+
   - [X] packaging tool - cask
 
   - [-] xref
@@ -257,8 +259,6 @@ header is updated with the correct information and written at the beginning of t
 
   - [ ] setup Elsa
 
-  - [ ] defcustom for key variables/parameters
-
   - [ ] extract specialised faces to be used for highlighting
 
   - [ ] src file support? generic mode?
@@ -266,8 +266,6 @@ header is updated with the correct information and written at the beginning of t
   - [ ] reuse definition cache between xref and eldoc (and imenu?)
 
   - [ ] hideshow
-
-  - [ ] customisation options (compiler, etc)
 
   - [ ] publish the package
 
