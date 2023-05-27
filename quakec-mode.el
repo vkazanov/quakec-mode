@@ -42,8 +42,6 @@
 
 (defvar quakec-flymake-gmqcc-cmd '("gmqcc" "-Wall" "-nocolor" "-std=fteqcc"))
 
-(defvar-local quakec--flymake-proc nil)
-
 ;;
 ;;; Syntax highlighting and (limited) parsing regexps
 ;;
@@ -456,6 +454,9 @@ respect to the project root."
 ;;; On-the-fly syntax checking
 ;;
 
+
+(defvar-local quakec--flymake-proc nil)
+
 (defun quakec--flymake-fteqcc-build-diagnostic-re (fpath)
   (format "^\\(?:%s\\|-\\):\\([0-9]+\\): \\(.*\\)$" (regexp-quote fpath)))
 
@@ -565,7 +566,8 @@ respect to the project root."
 (defun quakec-recompile ()
   "Recompile a QuakeC project."
   (interactive)
-  (let ((default-directory compilation-directory))
+  (let ((default-directory (or compilation-directory
+                               (quakec--find-project-root))))
     (recompile)))
 
 ;;
@@ -597,7 +599,10 @@ respect to the project root."
   ;; Eldoc setup
   (add-hook 'after-save-hook #'quakec--after-save-hook nil 'local)
   (setq-local eldoc-documentation-function #'quakec--eldoc-function)
-  (quakec--update-definitions))
+  (quakec--update-definitions)
+
+  ;; Compile defaults setup
+  (setq-local compile-command quakec-default-compile-command))
 
 (provide 'quakec-mode)
 
