@@ -69,36 +69,43 @@ flymake backend"
 ;;; Faces
 ;;
 
+(defvar quakec-keyword-face 'quakec-keyword-face)
 (defface quakec-keyword-face
   '((t :inherit font-lock-keyword-face))
   "Face for keywords"
   :group 'quakec-mode)
 
+(defvar quakec-type-face 'quakec-type-face)
 (defface quakec-type-face
   '((t :inherit font-lock-type-face))
   "Face for types"
   :group 'quakec-mode)
 
+(defvar quakec-constant-face 'quakec-constant-face)
 (defface quakec-constant-face
   '((t :inherit font-lock-constant-face))
   "Face for constants"
   :group 'quakec-mode)
 
+(defvar quakec-builtin-face 'quakec-builtin-face)
 (defface quakec-builtin-face
   '((t :inherit font-lock-builtin-face))
   "Face for builtins"
   :group 'quakec-mode)
 
+(defvar quakec-preprocessor-face 'quakec-preprocessor-face)
 (defface quakec-preprocessor-face
   '((t :inherit font-lock-preprocessor-face))
   "Face for preprocessor pragmas"
   :group 'quakec-mode)
 
+(defvar quakec-variable-name-face 'quakec-variable-name-face)
 (defface quakec-variable-name-face
   '((t :inherit font-lock-variable-name-face))
   "Face for variable names"
   :group 'quakec-mode)
 
+(defvar quakec-function-name-face 'quakec-function-name-face)
 (defface quakec-function-name-face
   '((t :inherit font-lock-function-name-face))
   "Face for function names"
