@@ -48,7 +48,7 @@ directory."
   :group 'quakec-mode)
 
 
-(defcustom quakec-default-compile-command quakec-fteqcc-compile-command
+(defcustom quakec-compile-command quakec-fteqcc-compile-command
   "A default command to use for compiling QuakeC project."
   :type 'string
   :group 'quakec-mode)
@@ -581,7 +581,7 @@ respect to the project root."
   (interactive)
   (let ((default-directory (quakec--find-project-root))
         (compile-cmd (compilation-read-command
-                      quakec-default-compile-command)))
+                      quakec-compile-command)))
     (compile compile-cmd)))
 
 ;;;###autoload
