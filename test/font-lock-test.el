@@ -1,6 +1,7 @@
 ;;; font-lock-test.el --- Tests for quakec-mode font-lock
 
 (require 'assess)
+(require 'quakec-mode)
 
 (ert-deftest font-lock-comments-test ()
   (should (assess-face-at=
@@ -32,7 +33,7 @@ entity	other;
 float	time;
 "
            'quakec-mode '("world" "self" "other" "time")
-           'font-lock-builtin-face)))
+           'quakec-builtin-face)))
 
 
 (ert-deftest font-lock-functions-test ()
@@ -51,7 +52,7 @@ a + b;
 };
 "
            'quakec-mode '("Function1" "Function2" "Function3" "Method4")
-           'font-lock-function-name-face)))
+           'quakec-function-name-face)))
 
 
 (ert-deftest font-lock-function-params-test ()
@@ -77,7 +78,7 @@ float(float param10) Function2;
                           "param4" "param5" "param6"
                           "param7" "param8" "param9"
                           "param10" "param11" "param12" "param13")
-           'font-lock-variable-name-face)))
+           'quakec-variable-name-face)))
 
 
 (ert-deftest font-lock-variables-fields-test ()
@@ -95,7 +96,7 @@ vector Variable3;
 
 "
            'quakec-mode '("Variable1" "Variable2" "Variable3" "Field1" "Field2")
-           'font-lock-variable-name-face)))
+           'quakec-variable-name-face)))
 
 ;; (ert-deftest font-lock-literals-test ()
 ;;   (should (assess-face-at= "

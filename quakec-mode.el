@@ -66,6 +66,47 @@ flymake backend"
   :group 'quakec-mode)
 
 ;;
+;;; Faces
+;;
+
+(defface quakec-keyword-face
+  '((t :inherit font-lock-keyword-face))
+  "Face for keywords"
+  :group 'quakec-mode)
+
+(defface quakec-type-face
+  '((t :inherit font-lock-type-face))
+  "Face for types"
+  :group 'quakec-mode)
+
+(defface quakec-constant-face
+  '((t :inherit font-lock-constant-face))
+  "Face for constants"
+  :group 'quakec-mode)
+
+(defface quakec-builtin-face
+  '((t :inherit font-lock-builtin-face))
+  "Face for builtins"
+  :group 'quakec-mode)
+
+(defface quakec-preprocessor-face
+  '((t :inherit font-lock-preprocessor-face))
+  "Face for preprocessor pragmas"
+  :group 'quakec-mode)
+
+(defface quakec-variable-name-face
+  '((t :inherit font-lock-variable-name-face))
+  "Face for variable names"
+  :group 'quakec-mode)
+
+(defface quakec-function-name-face
+  '((t :inherit font-lock-function-name-face))
+  "Face for function names"
+  :group 'quakec-mode)
+
+
+
+;;
 ;;; Syntax highlighting and (limited) parsing regexps
 ;;
 
@@ -298,23 +339,23 @@ Regexp group 1 should always be the name of the symbol.")
 ;;
 
 (defvar quakec--font-lock-keywords
-  `((,quakec--keywords-re . font-lock-keyword-face)
-    (,quakec--basic-type-re . font-lock-type-face)
-    (,quakec--constants-re . font-lock-constant-face)
-    (,quakec--builtins-re . font-lock-builtin-face)
-    (,quakec--pragmas-re . font-lock-preprocessor-face)
-    (,quakec--global-variable-re (1 font-lock-variable-name-face)
-                                 (,quakec--qc-variable-name-re nil nil (1 font-lock-variable-name-face)))
-    (,quakec--local-variable-re (1 font-lock-variable-name-face)
-                                (,quakec--qc-variable-name-re nil nil (1 font-lock-variable-name-face)))
-    (,quakec--field-re (1 font-lock-variable-name-face)
-                       (,quakec--qc-variable-name-re nil nil (1 font-lock-variable-name-face)))
-    (,quakec--qc-function-re . (1 font-lock-function-name-face ))
-    (,quakec--qc-method-re . (1 font-lock-function-name-face ))
-    (,quakec--qc-function-parameter-left-re (,quakec--qc-function-parameter-re nil nil (1 font-lock-variable-name-face)))
-    (,quakec--qc-method-parameter-left-re (,quakec--qc-function-parameter-re nil nil (1 font-lock-variable-name-face)))
-    (,quakec--qc-function-frame-params-re (2 font-lock-variable-name-face)
-                                          (3 font-lock-variable-name-face))))
+  `((,quakec--keywords-re . 'quakec-keyword-face)
+    (,quakec--basic-type-re . 'quakec-type-face)
+    (,quakec--constants-re . 'quakec-constant-face)
+    (,quakec--builtins-re . 'quakec-builtin-face)
+    (,quakec--pragmas-re . 'quakec-preprocessor-face)
+    (,quakec--global-variable-re (1 'quakec-variable-name-face)
+                                 (,quakec--qc-variable-name-re nil nil (1 'quakec-variable-name-face)))
+    (,quakec--local-variable-re (1 'quakec-variable-name-face)
+                                (,quakec--qc-variable-name-re nil nil (1 'quakec-variable-name-face)))
+    (,quakec--field-re (1 'quakec-variable-name-face)
+                       (,quakec--qc-variable-name-re nil nil (1 'quakec-variable-name-face)))
+    (,quakec--qc-function-re . (1 'quakec-function-name-face ))
+    (,quakec--qc-method-re . (1 'quakec-function-name-face ))
+    (,quakec--qc-function-parameter-left-re (,quakec--qc-function-parameter-re nil nil (1 'quakec-variable-name-face)))
+    (,quakec--qc-method-parameter-left-re (,quakec--qc-function-parameter-re nil nil (1 'quakec-variable-name-face)))
+    (,quakec--qc-function-frame-params-re (2 'quakec-variable-name-face)
+                                          (3 'quakec-variable-name-face))))
 
 
 ;;
@@ -635,7 +676,7 @@ respect to the project root."
   (quakec--update-definitions)
 
   ;; Compile defaults setup
-  (setq-local compile-command quakec-default-compile-command))
+  (setq-local compile-command quakec-compile-command))
 
 (provide 'quakec-mode)
 

@@ -236,6 +236,8 @@ header is updated with the correct information and written at the beginning of t
 
     - [ ] qcc
 
+  - [X] extract specialised faces to be used for highlighting
+
   - [-] Eldoc
 
     - [X] local definitions
@@ -260,8 +262,6 @@ header is updated with the correct information and written at the beginning of t
       - [ ] preprocessing?
 
   - [ ] setup Elsa
-
-  - [ ] extract specialised faces to be used for highlighting
 
   - [ ] src file support? generic mode?
 
