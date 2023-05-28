@@ -190,6 +190,8 @@ header is updated with the correct information and written at the beginning of t
 
   - [X] packaging tool - cask
 
+  - [X] quakec-mode-map
+
   - [-] xref
 
     - [X] local definitions
@@ -278,6 +280,8 @@ header is updated with the correct information and written at the beginning of t
     - [ ] checkdoc
 
     - [ ] package-lint
+
+    - [ ] README update
 
     - [ ] emacs lisp conventions for variables and constants?
 

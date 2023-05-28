@@ -593,7 +593,15 @@ respect to the project root."
     (recompile)))
 
 ;;
+;;; Mode map
+;;
 
+(defvar quakec-mode-map
+  (let ((map (make-sparse-keymap)))
+    (define-key map (kbd "C-c C-c") 'quakec-compile)
+    (define-key map (kbd "C-c C-r") 'quakec-recompile)
+    map)
+  "Keymap for QuakeC major mode.")
 
 ;; TODO: c-mode brings A LOT of cruft. E.g., some of the tweaks
 ;; introduced in the c-mode hook by users might not be relevant for
@@ -602,7 +610,9 @@ respect to the project root."
 ;;
 ;;;###autoload
 (define-derived-mode quakec-mode c-mode "QuakeC"
-  "Major mode for editing QuakeC files."
+  "Major mode for editing QuakeC files.
+
+\\{quakec-mode-map}"
   :group 'quakec-mode
 
   ;; Basic syntax highlighting
