@@ -261,7 +261,7 @@ header is updated with the correct information and written at the beginning of t
 
       - [ ] preprocessing?
 
-  - [ ] setup Elsa
+  - [ ] flycheck
 
   - [ ] src file support? generic mode?
 
@@ -274,6 +274,8 @@ header is updated with the correct information and written at the beginning of t
   - [ ] c-style functions? better dialect support?
 
   - [ ] enforce emacs lisp coding conventions
+
+    - [ ] setup Elsa
 
     - [ ] write a package release checklist
 

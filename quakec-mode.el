@@ -685,6 +685,9 @@ respect to the project root."
   ;; Compile defaults setup
   (setq-local compile-command quakec-compile-command))
 
+;;;###autoload
+(add-to-list 'auto-mode-alist '("\\.qc\\'" . quakec-mode))
+
 (provide 'quakec-mode)
 
 ;;; quakec-mode.el ends here
