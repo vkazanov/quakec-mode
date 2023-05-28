@@ -25,6 +25,7 @@
 (require 'rx)
 (require 'cl-lib)
 (require 'xref)
+(require 'generic-x)
 
 (defconst quakec-fteqcc-compile-command "fteqcc -Wall "
   "An FTEQCC compile command for QuakeC.")
@@ -685,8 +686,22 @@ respect to the project root."
   ;; Compile defaults setup
   (setq-local compile-command quakec-compile-command))
 
+
+(define-generic-mode quakec-progs-mode
+  '("//")      ;; comments
+  nil          ;; keywords
+  nil
+  ;; '(("^\\(\\w+/\\)*?\\(\\w+\\.qc\\)"
+  ;;    (1 font-lock-string-face)
+  ;;    (2 font-lock-keyword-face)))
+  '("\\.src$") ;; auto-mode list
+  nil          ;; functions to run
+  "A mode for progs.src QuakeC files")
+
 ;;;###autoload
 (add-to-list 'auto-mode-alist '("\\.qc\\'" . quakec-mode))
+
+
 
 (provide 'quakec-mode)
 

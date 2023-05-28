@@ -261,9 +261,9 @@ header is updated with the correct information and written at the beginning of t
 
       - [ ] preprocessing?
 
-  - [ ] flycheck
-
   - [ ] src file support? generic mode?
+
+  - [ ] flycheck
 
   - [ ] reuse definition cache between xref and eldoc (and imenu?)
 
