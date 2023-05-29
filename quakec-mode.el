@@ -688,13 +688,18 @@ respect to the project root."
 
 ;; TODO: extract custom faces, make paths a string but with a bold filename
 ;;
-;; TODO: highlight the output file on the first line as well (the same
-;; way shabang gets highlighted)
+;;;###autoload
 (define-generic-mode quakec-progs-mode
   '("//") ;; comments
   nil     ;; keywords
-  '(("^\\(\\(\\w+/\\)+?\\)\\w+\\.qc" 1 font-lock-string-face)
-    ("^\\(\\w+/\\)*?\\(\\w+\\.qc\\)" 2 font-lock-keyword-face))
+  '( ;; the output dat file on the first line
+    ("\\`\\(\\([\\.[:alnum:]]+/\\)*?\\)\\(\\w+\\.dat\\)"
+     (1 font-lock-string-face)
+     (3 font-lock-keyword-face))
+    ;; the rest - files to include
+    ("^\\(\\(\\w+/\\)*?\\)\\(\\w+\\.qc\\)"
+     (1 font-lock-string-face)
+     (3 font-lock-keyword-face)))
   '("\\.src$") ;; auto-mode list
   nil          ;; functions to run
   "A mode for progs.src QuakeC files")

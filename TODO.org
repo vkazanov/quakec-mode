@@ -261,7 +261,15 @@ header is updated with the correct information and written at the beginning of t
 
       - [ ] preprocessing?
 
-  - [ ] src file support? generic mode?
+  - [-] src file support? generic mode?
+
+    - [X] generic mode
+
+    - [X] highlight the first line
+
+    - [X] highlight all the includes
+
+    - [ ] extract faces
 
   - [ ] flycheck
 
