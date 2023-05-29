@@ -110,4 +110,22 @@ vector Variable3;
 ;;                            '("11" "2.2" "-333" "444" "string")
 ;;                            )))
 
+
+(ert-deftest font-lock-progs-test ()
+  (should (assess-face-at=
+           "../outputpath/progs.dat
+includepath/to/include1.qc
+include2.qc
+include3.qc
+"
+           'quakec-progs-mode
+           '("outputpath"
+             "progs.dat"
+             "includepath"
+             "include1")
+           '(quakec-progs-output-path-face
+             quakec-progs-output-fname-face
+             quakec-progs-path-face
+             quakec-progs-fname-face))))
+
 ;;; font-lock-test.el ends here
