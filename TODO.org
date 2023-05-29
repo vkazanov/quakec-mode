@@ -192,6 +192,16 @@ header is updated with the correct information and written at the beginning of t
 
   - [X] quakec-mode-map
 
+  - [X] src file support? generic mode?
+
+    - [X] generic mode
+
+    - [X] highlight the first line
+
+    - [X] highlight all the includes
+
+    - [X] extract faces
+
   - [-] xref
 
     - [X] local definitions
@@ -260,16 +270,6 @@ header is updated with the correct information and written at the beginning of t
       - [ ] language
 
       - [ ] preprocessing?
-
-  - [-] src file support? generic mode?
-
-    - [X] generic mode
-
-    - [X] highlight the first line
-
-    - [X] highlight all the includes
-
-    - [ ] extract faces
 
   - [ ] flycheck
 

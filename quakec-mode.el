@@ -112,7 +112,31 @@ flymake backend"
   "Face for function names"
   :group 'quakec-mode)
 
+;;; progs.src faces
 
+(defvar quakec-progs-output-path-face 'font-lock-string-face)
+(defface quakec-progs-output-path-face
+  '((t :inherit font-lock-string-face))
+  "Face for filenames in QuakeC progs.src files"
+  :group 'quakec-mode)
+
+(defvar quakec-progs-output-fname-face 'quakec-progs-output-fname-face)
+(defface quakec-progs-output-fname-face
+  '((t :inherit font-lock-keyword-face))
+  "Face for filenames in QuakeC progs.src files"
+  :group 'quakec-mode)
+
+(defvar quakec-progs-path-face 'quakec-progs-path-face)
+(defface quakec-progs-path-face
+  '((t :inherit font-lock-string-face))
+  "Face for paths in QuakeC progs.src files"
+  :group 'quakec-mode)
+
+(defvar quakec-progs-fname-face 'quakec-progs-fname-face)
+(defface quakec-progs-fname-face
+  '((t :inherit font-lock-string-face))
+  "Face for paths in QuakeC progs.src files"
+  :group 'quakec-mode)
 
 ;;
 ;;; Syntax highlighting and (limited) parsing regexps
@@ -686,20 +710,18 @@ respect to the project root."
   ;; Compile defaults setup
   (setq-local compile-command quakec-compile-command))
 
-;; TODO: extract custom faces, make paths a string but with a bold filename
-;;
 ;;;###autoload
 (define-generic-mode quakec-progs-mode
   '("//") ;; comments
   nil     ;; keywords
   '( ;; the output dat file on the first line
     ("\\`\\(\\([\\.[:alnum:]]+/\\)*?\\)\\(\\w+\\.dat\\)"
-     (1 font-lock-string-face)
-     (3 font-lock-keyword-face))
+     (1 'quakec-progs-output-path-face)
+     (3 'quakec-progs-output-fname-face))
     ;; the rest - files to include
     ("^\\(\\(\\w+/\\)*?\\)\\(\\w+\\.qc\\)"
-     (1 font-lock-string-face)
-     (3 font-lock-keyword-face)))
+     (1 'quakec-progs-path-face)
+     (3 'quakec-progs-fname-face)))
   '("\\.src$") ;; auto-mode list
   nil          ;; functions to run
   "A mode for progs.src QuakeC files")
