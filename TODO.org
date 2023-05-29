@@ -209,7 +209,9 @@ header is updated with the correct information and written at the beginning of t
     - [ ] wider definition search (hybrid with grep-like or something?)
 
     - [ ] good example as well: js-mode (derived from espresso-mode i used to use),
-      especially the way js-find-symbol works with all known symbols
+      especially the way js-find-symbol works with all known symbols across all open
+      buffers. It might be also worth doing something like a filter based on a project
+      root.
 
     - [ ] https://github.com/js-emacs/xref-js2/blob/master/xref-js2.el - interesting
       hybrid ast/ag global symbol search
