@@ -259,7 +259,18 @@ header is updated with the correct information and written at the beginning of t
   - [ ] see coffee-mode for how to provide customize interfaces, compilation commands,
     setup hideshow minor mode, etc
 
-  - [ ] advanced support
+  - [ ] put together a list of things necessary for a release on public repos, also the
+    next one
+
+    - go through, say, 5 top mod codebase to check compatibility
+
+    - FTEQCC dialect support, especially both function definition style
+
+    - unified local definition cache (xref, eldoc, imenu)
+
+    - definition search in open current project buffers
+
+  - [ ] broader dialect support
 
     - [ ] full fteqcc dialect
 
@@ -285,9 +296,9 @@ header is updated with the correct information and written at the beginning of t
 
   - [ ] enforce emacs lisp coding conventions
 
-    - [ ] setup Elsa
+  - [ ] write a package release checklist
 
-    - [ ] write a package release checklist
+    - [ ] Elsa
 
     - [ ] checkdoc
 
