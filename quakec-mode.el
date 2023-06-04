@@ -390,6 +390,44 @@ Regexp group 1 should always be the name of the symbol.")
     (,quakec--qc-function-frame-params-re (2 'quakec-variable-name-face)
                                           (3 'quakec-variable-name-face))))
 
+;;
+;;; Cached definition lookup
+;;
+
+;; TODO: to be reused across all defintion-based facilities
+;;
+(cl-defstruct (quakec--definition (:constructor nil)
+                                  (:constructor quakec--definition-create (name beg end signature))
+                                  (:copier nil))
+  "A definition location and signature meant to be used in various
+quakec-mode facilities relying on defition search."
+  name beg end signature)
+
+(defvar-local quakec--definitions-cache nil
+  "A cache of QuakeC definitions in the current buffer.")
+
+(defun quakec--update-definitions ()
+  "Update the cache of QuakeC definitions."
+  (setq quakec--definitions-cache (make-hash-table :test 'equal))
+  (save-excursion
+    (goto-char (point-min))
+    (while (re-search-forward quakec--definitions-re nil t)
+      ;; not a comment
+      (unless (nth 4 (syntax-ppss))
+        (let* ((name (match-string-no-properties 1))
+               (beg (match-beginning 0))
+               (end (match-end 0))
+               (signature (match-string 0))
+               (def (quakec--definition-create name beg end signature)))
+          (puthash name def quakec--definitions-cache))))))
+
+(defun quakec--find-definition (name)
+  "Retrieve a definition from definition cache by NAME."
+  ;; try cache first, then update and try again
+  (or (gethash name quakec--definitions-cache)
+      (progn
+        (quakec--update-definitions)
+        (gethash name quakec--definitions-cache))))
 
 ;;
 ;;; Completion-at-point backend
@@ -434,27 +472,13 @@ Regexp group 1 should always be the name of the symbol.")
   "File-local QuakeC Xref backend."
   'quakec)
 
-(defun quakec--find-file-definitions (identifier)
+(defun quakec--xref-find-definitions (identifier)
   "Find definitions of an IDENTIFIER in the current buffer."
   (let ((matches (list)))
-    (save-excursion
-      (goto-char (point-min))
-      ;; Search for the identifier in the buffer
-      (while (search-forward identifier nil t)
-        (let ((point (point)))
-          (save-excursion
-            (beginning-of-line)
-            ;; Check if the identifier is a definition and the context is right
-            (when (and
-                   ;; not in a comment
-                   (not (nth 4 (syntax-ppss)))
-                   ;; this is a definition indeed
-                   (looking-at quakec--definitions-re)
-                   ;; definition identifier is correct
-                   (equal (match-string-no-properties 1) identifier))
-              ;; got it
-              (push (xref-make identifier (xref-make-buffer-location (current-buffer) point)) matches)))))
-      matches)))
+    (when-let ((def (quakec--find-definition identifier))
+               (point (quakec--definition-beg def)))
+      (push (xref-make identifier (xref-make-buffer-location (current-buffer) point)) matches))
+    matches))
 
 (cl-defmethod xref-backend-definitions ((backend (eql quakec)) identifier)
   "QuakeC file-level definition finding Xref BACKEND.
@@ -475,44 +499,6 @@ Argument IDENTIFIER is a symbol to lookup."
 ;;
 ;;; Eldoc
 ;;
-
-;; TODO: to be reused across all defintion-based facilities
-;;
-(cl-defstruct (quakec--definition (:constructor nil)
-                                  (:constructor quakec--definition-create (name start end signature))
-                                  (:copier nil))
-  "A definition location and signature meant to be used in various
-quakec-mode facilities relying on defition search."
-  name
-  beg
-  end
-  signature)
-
-(defvar-local quakec--definitions-cache nil
-  "A cache of QuakeC definitions in the current buffer.")
-
-(defun quakec--update-definitions ()
-  "Update the cache of QuakeC definitions."
-  (setq quakec--definitions-cache (make-hash-table :test 'equal))
-  (save-excursion
-    (goto-char (point-min))
-    (while (re-search-forward quakec--definitions-re nil t)
-      ;; not a comment
-      (unless (nth 4 (syntax-ppss))
-        (let* ((name (match-string-no-properties 1))
-               (beg (match-beginning 0))
-               (end (match-end 0))
-               (signature (match-string 0))
-               (def (quakec--definition-create name beg end signature)))
-          (puthash name def quakec--definitions-cache))))))
-
-(defun quakec--find-definition (name)
-  "Retrieve a definition from definition cache by NAME."
-  ;; try cache first, then update and try again
-  (or (gethash name quakec--definitions-cache)
-      (progn
-        (quakec--update-definitions)
-        (gethash name quakec--definitions-cache))))
 
 (defun quakec--eldoc-function ()
   "Show a definition string for the current function or method at
