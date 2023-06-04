@@ -3,10 +3,16 @@
 
 (ert-deftest eldoc-test ()
   (with-quakec-temp-buffer
-      "
+   "
 /* a random multiline comment*/
 
 /* a commented out function */
+/*
+void() TestFunction0 = {
+   b = insideCommentedTestFunction1
+};
+*/
+
 /* void() TestFunction1 = {
    b = insideCommentedTestFunction1
 }; */
@@ -37,36 +43,43 @@ void() TestFunction5 = [$pain1, $pain2]
 };
 
 "
-    ;; Nothing in the beginning
-    (goto-char (point-min))
-    (should-not (quakec--eldoc-function))
+   ;; Nothing in the beginning
+   (goto-char (point-min))
+   (should-not (quakec--eldoc-function))
 
-    ;; Should not detect stuff from within comments
-    (look-at "testFunction1")
-    (should-not (quakec--eldoc-function))
+   ;; Should not detect stuff from within comments
+   (look-at "TestFunction0")
+   (should-not (quakec--eldoc-function))
 
-    (look-at "Function3")
-    (should (equal (quakec--eldoc-function) "void() TestFunction3"))
+   (look-at "TestFunction1")
+   (should-not (quakec--eldoc-function))
 
-    ;; A defintion line
-    (look-at "Function4")
-    (should (equal (quakec--eldoc-function) "float(entity targ, entity inflictor) TestFunction4"))
+   (look-at "TestFunction2")
+   (should-not (quakec--eldoc-function))
 
-    ;; Nothing when not in a funciton, and not a known symbol
-    (look-at "betweenFunctions")
-    (should-not (quakec--eldoc-function))
+   ;; a declaration line
+   (look-at "Function3")
+   (should (equal (quakec--eldoc-function) "void() TestFunction3"))
 
-    ;; frame function
-    (look-at "TestFunction5")
-    (should (equal (quakec--eldoc-function) "void() TestFunction5"))
+   ;; A defintion line
+   (look-at "Function4")
+   (should (equal (quakec--eldoc-function) "float(entity targ, entity inflictor) TestFunction4"))
 
-    ;; Method function
-    (look-at "TestFunction6")
-    (should (equal (quakec--eldoc-function) ".void() TestFunction6"))
+   ;; Nothing when not in a funciton, and not a known symbol
+   (look-at "betweenFunctions")
+   (should-not (quakec--eldoc-function))
 
-    ;; unknown symbol
-    (look-at "unknownSymbol")
-    (should-not (quakec--eldoc-function))))
+   ;; frame function
+   (look-at "TestFunction5")
+   (should (equal (quakec--eldoc-function) "void() TestFunction5"))
+
+   ;; Method function
+   (look-at "TestFunction6")
+   (should (equal (quakec--eldoc-function) ".void() TestFunction6"))
+
+   ;; unknown symbol
+   (look-at "unknownSymbol")
+   (should-not (quakec--eldoc-function))))
 
 
 ;;; eldoc-test.el ends here

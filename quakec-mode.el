@@ -406,19 +406,19 @@ Regexp group 1 should always be the name of the symbol.")
                      (let (completions)
                        (goto-char (point-min))
                        (while (re-search-forward quakec--qc-function-re nil t)
-                         (when (not (nth 4 (syntax-ppss)))
+                         (unless(nth 4 (syntax-ppss))
                            (push (match-string-no-properties 1) completions)))
                        (goto-char (point-min))
                        (while (re-search-forward quakec--qc-method-re nil t)
-                         (when (not (nth 4 (syntax-ppss)))
+                         (unless(nth 4 (syntax-ppss))
                            (push (match-string-no-properties 1) completions)))
                        (goto-char (point-min))
                        (while (re-search-forward quakec--global-variable-re nil t)
-                         (when (not (nth 4 (syntax-ppss)))
+                         (unless(nth 4 (syntax-ppss))
                            (push (match-string-no-properties 1) completions)))
                        (goto-char (point-min))
                        (while (re-search-forward quakec--field-re nil t)
-                         (when (not (nth 4 (syntax-ppss)))
+                         (unless(nth 4 (syntax-ppss))
                            (push (match-string-no-properties 1) completions)))
                        completions))))
 
@@ -445,15 +445,15 @@ Regexp group 1 should always be the name of the symbol.")
           (save-excursion
             (beginning-of-line)
             ;; Check if the identifier is a definition and the context is right
-            (if (and
-                 ;; not in a comment
-                 (not (nth 4 (syntax-ppss)))
-                 ;; this is a definition indeed
-                 (looking-at quakec--definitions-re)
-                 ;; definition identifier is correct
-                 (equal (match-string-no-properties 1) identifier))
-                ;; got it
-                (push (xref-make identifier (xref-make-buffer-location (current-buffer) point)) matches)))))
+            (when (and
+                   ;; not in a comment
+                   (not (nth 4 (syntax-ppss)))
+                   ;; this is a definition indeed
+                   (looking-at quakec--definitions-re)
+                   ;; definition identifier is correct
+                   (equal (match-string-no-properties 1) identifier))
+              ;; got it
+              (push (xref-make identifier (xref-make-buffer-location (current-buffer) point)) matches)))))
       matches)))
 
 (cl-defmethod xref-backend-definitions ((backend (eql quakec)) identifier)
@@ -497,11 +497,13 @@ quakec-mode facilities relying on defition search."
   (save-excursion
     (goto-char (point-min))
     (while (re-search-forward quakec--definitions-re nil t)
-      (let ((name (match-string-no-properties 1))
-            (beg (match-beginning 0))
-            (end (match-end 0))
-            (signature (match-string 0)))
-        (let ((def (quakec--definition-create name beg end signature)))
+      ;; not a comment
+      (unless (nth 4 (syntax-ppss))
+        (let* ((name (match-string-no-properties 1))
+               (beg (match-beginning 0))
+               (end (match-end 0))
+               (signature (match-string 0))
+               (def (quakec--definition-create name beg end signature)))
           (puthash name def quakec--definitions-cache))))))
 
 (defun quakec--find-definition (name)
