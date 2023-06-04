@@ -269,7 +269,7 @@ header is updated with the correct information and written at the beginning of t
 
       - FTEQCC dialect support?
 
-    - unified local definition cache (xref, eldoc, imenu)
+    - unified local definition cache (xref, eldoc, capf, imenu)
 
     - definition search in open current project buffers
 
