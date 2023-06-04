@@ -24,6 +24,7 @@
 
 (require 'rx)
 (require 'cl-lib)
+(require 'subr-x)
 (require 'xref)
 (require 'generic-x)
 
@@ -475,6 +476,18 @@ Argument IDENTIFIER is a symbol to lookup."
 ;;; Eldoc
 ;;
 
+;; TODO: to be reused across all defintion-based facilities
+;;
+(cl-defstruct (quakec--definition (:constructor nil)
+                                  (:constructor quakec--definition-create (name start end signature))
+                                  (:copier nil))
+  "A definition location and signature meant to be used in various
+quakec-mode facilities relying on defition search."
+  name
+  beg
+  end
+  signature)
+
 (defvar-local quakec--definitions-cache nil
   "A cache of QuakeC definitions in the current buffer.")
 
@@ -485,19 +498,27 @@ Argument IDENTIFIER is a symbol to lookup."
     (goto-char (point-min))
     (while (re-search-forward quakec--definitions-re nil t)
       (let ((name (match-string-no-properties 1))
+            (beg (match-beginning 0))
+            (end (match-end 0))
             (signature (match-string 0)))
-        (puthash name signature quakec--definitions-cache)))))
+        (let ((def (quakec--definition-create name beg end signature)))
+          (puthash name def quakec--definitions-cache))))))
+
+(defun quakec--find-definition (name)
+  "Retrieve a definition from definition cache by NAME."
+  ;; try cache first, then update and try again
+  (or (gethash name quakec--definitions-cache)
+      (progn
+        (quakec--update-definitions)
+        (gethash name quakec--definitions-cache))))
 
 (defun quakec--eldoc-function ()
   "Show a definition string for the current function or method at
 point."
-  (let ((symbol-name (thing-at-point 'symbol 'no-props)))
-    (when symbol-name
-      ;; try cache first, then update and try again
-      (or (gethash symbol-name quakec--definitions-cache)
-          (progn
-            (quakec--update-definitions)
-            (gethash symbol-name quakec--definitions-cache))))))
+  (when-let*
+      ((symbol-name (thing-at-point 'symbol 'no-props))
+       (def (quakec--find-definition symbol-name)))
+    (quakec--definition-signature def)))
 
 (defun quakec--after-save-hook ()
   "Update QuakeC definitions cache after saving the file."
