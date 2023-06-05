@@ -421,6 +421,10 @@ quakec-mode facilities relying on defition search."
                (def (quakec--definition-create name beg end signature)))
           (puthash name def quakec--definitions-cache))))))
 
+(defun quakec--get-definition-names ()
+  "Retrieve all known buffer definition names."
+  (hash-table-keys quakec--definitions-cache))
+
 (defun quakec--find-definition (name)
   "Retrieve a definition from definition cache by NAME."
   (gethash name quakec--definitions-cache))
@@ -431,31 +435,11 @@ quakec-mode facilities relying on defition search."
 
 (defun quakec-completion-at-point ()
   "Provide completion for local QuakeC symbols."
-  (let (symbol-bounds symbols-start symbols-end complete-function)
+  (let (symbol-bounds symbols-start symbols-end)
     (setq symbol-bounds (bounds-of-thing-at-point 'symbol))
     (when (and (setq symbols-start (car symbol-bounds))
                (setq symbols-end (cdr symbol-bounds)))
-      (setq complete-function
-            (lambda (_) (save-excursion
-                     (let (completions)
-                       (goto-char (point-min))
-                       (while (re-search-forward quakec--function-re nil t)
-                         (unless(nth 4 (syntax-ppss))
-                           (push (match-string-no-properties 1) completions)))
-                       (goto-char (point-min))
-                       (while (re-search-forward quakec--q--hod-re nil t)
-                         (unless(nth 4 (syntax-ppss))
-                           (push (match-string-no-properties 1) completions)))
-                       (goto-char (point-min))
-                       (while (re-search-forward quakec--global-variable-re nil t)
-                         (unless(nth 4 (syntax-ppss))
-                           (push (match-string-no-properties 1) completions)))
-                       (goto-char (point-min))
-                       (while (re-search-forward quakec--field-re nil t)
-                         (unless(nth 4 (syntax-ppss))
-                           (push (match-string-no-properties 1) completions)))
-                       completions))))
-
+      (setq complete-function (lambda (_) (quakec--get-definition-names)))
       (list symbols-start symbols-end
             (completion-table-dynamic complete-function)
             :exclusive 'no))))
