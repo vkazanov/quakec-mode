@@ -483,7 +483,7 @@ quakec-mode facilities relying on defition search."
 (cl-defmethod xref-backend-definitions ((backend (eql quakec)) identifier)
   "QuakeC file-level definition finding Xref BACKEND.
 Argument IDENTIFIER is a symbol to lookup."
-  (quakec--find-file-definitions identifier))
+  (quakec--xref-find-definitions identifier))
 
 ;;
 ;;; Imenu
