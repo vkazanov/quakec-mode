@@ -423,11 +423,7 @@ quakec-mode facilities relying on defition search."
 
 (defun quakec--find-definition (name)
   "Retrieve a definition from definition cache by NAME."
-  ;; try cache first, then update and try again
-  (or (gethash name quakec--definitions-cache)
-      (progn
-        (quakec--update-definitions)
-        (gethash name quakec--definitions-cache))))
+  (gethash name quakec--definitions-cache))
 
 ;;
 ;;; Completion-at-point backend
