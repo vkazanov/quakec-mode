@@ -118,13 +118,13 @@ flymake backend"
 (defvar quakec-progs-output-path-face 'font-lock-string-face)
 (defface quakec-progs-output-path-face
   '((t :inherit font-lock-string-face))
-  "Face for filenames in QuakeC progs.src files"
+  "Face for paths in QuakeC progs.src files"
   :group 'quakec-mode)
 
 (defvar quakec-progs-output-fname-face 'quakec-progs-output-fname-face)
 (defface quakec-progs-output-fname-face
   '((t :inherit font-lock-keyword-face))
-  "Face for filenames in QuakeC progs.src files"
+  "Face for output filename in QuakeC progs.src files"
   :group 'quakec-mode)
 
 (defvar quakec-progs-path-face 'quakec-progs-path-face)
@@ -136,7 +136,7 @@ flymake backend"
 (defvar quakec-progs-fname-face 'quakec-progs-fname-face)
 (defface quakec-progs-fname-face
   '((t :inherit font-lock-string-face))
-  "Face for paths in QuakeC progs.src files"
+  "Face for filenames in QuakeC progs.src files"
   :group 'quakec-mode)
 
 ;;
