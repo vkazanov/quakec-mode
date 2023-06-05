@@ -525,7 +525,6 @@ point."
       (beginning-of-defun)
       ;; Check if we are within a function body
       (if (and (or (looking-at quakec--qc-function-re)
-                   (looking-at quakec--qc-method-re)
                    (looking-at quakec--qc-method-re))
                (save-match-data
                  (end-of-defun)
