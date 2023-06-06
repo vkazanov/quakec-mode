@@ -37,12 +37,17 @@ void() TestFunction5 = [$pain1, $pain2]
 };
 
 "
-   (let ((index-alist (quakec--imenu-create-index)))
-     (should (equal (length index-alist) 4))
-     (should (alist-get "TestFunction3" index-alist nil nil #'string-equal))
-     (should (alist-get "TestFunction4" index-alist nil nil #'string-equal))
-     (should (alist-get "TestFunction5" index-alist nil nil #'string-equal))
-     (should (alist-get "TestFunction6" index-alist nil nil #'string-equal)))))
+   (let* ((index-alist (quakec--imenu-create-index))
+          (function-index-alist (alist-get "*Functions*" index-alist nil nil #'string-equal))
+          (method-index-alist (alist-get "*Methods*" index-alist nil nil #'string-equal)))
+
+     (should (equal (length function-index-alist) 3))
+     (should (alist-get "TestFunction3" function-index-alist nil nil #'string-equal))
+     (should (alist-get "TestFunction4" function-index-alist nil nil #'string-equal))
+     (should (alist-get "TestFunction5" function-index-alist nil nil #'string-equal))
+
+     (should (equal (length method-index-alist) 1))
+     (should (alist-get "TestFunction6" method-index-alist nil nil #'string-equal)))))
 
 (ert-deftest imenu-variables-test ()
   (with-quakec-temp-buffer
@@ -53,16 +58,28 @@ void() TestFunction5 = [$pain1, $pain2]
 // float AnotherCommented;
 
 /* a variable */
-float Global;
+float Global1;
+
+/* a variable */
+float Global2 = 10;
 
 /* a field */
-.float Field;
+.float Field1;
+
+.float Field2 = 10.1;
 
 "
-   (let ((index-alist (quakec--imenu-create-index)))
-     (should (equal (length index-alist) 2))
-     (should (alist-get "Global" index-alist nil nil #'string-equal))
-     (should (alist-get "Field" index-alist nil nil #'string-equal)))))
+   (let* ((index-alist (quakec--imenu-create-index))
+          (global-index-alist (alist-get "*Globals*" index-alist nil nil #'string-equal))
+          (field-index-alist (alist-get "*Fields*" index-alist nil nil #'string-equal)))
+
+     (should (equal (length global-index-alist) 2))
+     (should (alist-get "Global1" global-index-alist nil nil #'string-equal))
+     (should (alist-get "Global2" global-index-alist nil nil #'string-equal))
+
+     (should (equal (length field-index-alist) 2))
+     (should (alist-get "Field1" field-index-alist nil nil #'string-equal))
+     (should (alist-get "Field2" field-index-alist nil nil #'string-equal)))))
 
 (provide 'imenu-test)
 ;;; imenu-test.el ends here

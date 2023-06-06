@@ -390,7 +390,7 @@ something like \".void(\".")
                                   (:copier nil))
   "A definition location and signature meant to be used in various
 quakec-mode facilities relying on defition search."
-  name beg end signature)
+  name beg end signature deftype)
 
 (defvar-local quakec--definitions-cache nil
   "A cache of QuakeC definitions in the current buffer.")
@@ -399,52 +399,29 @@ quakec-mode facilities relying on defition search."
   "Update the cache of QuakeC definitions."
   (setq quakec--definitions-cache (make-hash-table :test 'equal))
   (save-excursion
+    (cl-loop
+     for (deftyp defre)
+     in `((function ,quakec--function-re)
+          (method ,quakec--method-re)
+          (global ,quakec--global-variable-re)
+          (field ,quakec--field-re))
+     do
+     (goto-char (point-min))
+     (while (re-search-forward defre nil t)
+       (unless (nth 4 (syntax-ppss))
+         (let* ((name (match-string-no-properties 1))
+                (beg (match-beginning 0))
+                (end (match-end 0))
+                (signature (match-string 0))
+                (def (quakec--definition-create name beg end signature deftyp)))
+           (puthash name def quakec--definitions-cache)))))))
 
-    (goto-char (point-min))
-    (while (re-search-forward quakec--function-re nil t)
-      (unless (nth 4 (syntax-ppss))
-        (let* ((name (match-string-no-properties 1))
-               (beg (match-beginning 0))
-               (end (match-end 0))
-               (signature (match-string 0))
-               (def (quakec--definition-create name beg end signature 'function)))
-          (puthash name def quakec--definitions-cache))))
-
-    (goto-char (point-min))
-    (while (re-search-forward quakec--method-re nil t)
-      (unless (nth 4 (syntax-ppss))
-        (let* ((name (match-string-no-properties 1))
-               (beg (match-beginning 0))
-               (end (match-end 0))
-               (signature (match-string 0))
-               (def (quakec--definition-create name beg end signature 'method)))
-          (puthash name def quakec--definitions-cache))))
-
-    (goto-char (point-min))
-    (while (re-search-forward quakec--global-variable-re nil t)
-      (unless (nth 4 (syntax-ppss))
-        (let* ((name (match-string-no-properties 1))
-               (beg (match-beginning 0))
-               (end (match-end 0))
-               (signature (match-string 0))
-               (def (quakec--definition-create name beg end signature 'global)))
-          (puthash name def quakec--definitions-cache))))
-
-    (goto-char (point-min))
-    (while (re-search-forward quakec--field-re nil t)
-      (unless (nth 4 (syntax-ppss))
-        (let* ((name (match-string-no-properties 1))
-               (beg (match-beginning 0))
-               (end (match-end 0))
-               (signature (match-string 0))
-               (def (quakec--definition-create name beg end signature 'field)))
-          (puthash name def quakec--definitions-cache))))))
-
-(defun quakec--get-definition-positions ()
-  "Retrieve a list all known buffer definitions mapped to positions
-in cons cells."
-  (cl-loop for def being the hash-values of quakec--definitions-cache collect
-           (cons (quakec--definition-name def) (quakec--definition-beg def))))
+(defun quakec--get-definition-positions (definition-type)
+  "Retrieve a list all known buffer definitions of DEFINITION-TYPE
+mapped to positions in cons cells."
+  (cl-loop for def being the hash-values of quakec--definitions-cache
+           if (eq (quakec--definition-deftype def) definition-type)
+           collect (cons (quakec--definition-name def) (quakec--definition-beg def))))
 
 (defun quakec--get-definition-names ()
   "Retrieve all known buffer definition names."
@@ -497,15 +474,17 @@ Argument IDENTIFIER is a symbol to lookup."
 (defun quakec--imenu-create-index ()
   "Build an Imenu index of file definitions. Return an index alist
 as required by `imenu-create-index-function'."
-  (let ((index-alist (quakec--get-definition-positions)))
+  (let ((index-alist))
+    (cl-loop
+     for (deftyp deftypname)
+     in '((function "*Functions*")
+          (method "*Methods*")
+          (global "*Globals*")
+          (field "*Fields*"))
+     do
+     (when-let ((defs (quakec--get-definition-positions deftyp)))
+       (push (cons deftypname defs) index-alist)))
     index-alist))
-
-;; (defvar quakec--imenu-generic-expression
-;;   `(("*Functions*" ,quakec--function-re 1)
-;;     ("*Methods*" ,quakec--method-re 1)
-;;     ("*Globals*" ,quakec--global-variable-re 1)
-;;     ("*Fields*" ,quakec--field-re 1))
-;;   "Imenu generic expression for `quakec-mode'.")
 
 ;;
 ;;; Eldoc
