@@ -421,6 +421,12 @@ quakec-mode facilities relying on defition search."
                (def (quakec--definition-create name beg end signature)))
           (puthash name def quakec--definitions-cache))))))
 
+(defun quakec--get-definition-positions ()
+  "Retrieve a list all known buffer definitions mapped to positions
+in cons cells."
+  (cl-loop for def being the hash-values of quakec--definitions-cache collect
+           (cons (quakec--definition-name def) (quakec--definition-beg def))))
+
 (defun quakec--get-definition-names ()
   "Retrieve all known buffer definition names."
   (hash-table-keys quakec--definitions-cache))
@@ -469,12 +475,18 @@ Argument IDENTIFIER is a symbol to lookup."
 ;;; Imenu
 ;;
 
-(defvar quakec--imenu-generic-expression
-  `(("*Functions*" ,quakec--function-re 1)
-    ("*Methods*" ,quakec--method-re 1)
-    ("*Globals*" ,quakec--global-variable-re 1)
-    ("*Fields*" ,quakec--field-re 1))
-  "Imenu generic expression for `quakec-mode'.")
+(defun quakec--imenu-create-index ()
+  "Build an Imenu index of file definitions. Return an index alist
+as required by `imenu-create-index-function'."
+  (let ((index-alist (quakec--get-definition-positions)))
+    index-alist))
+
+;; (defvar quakec--imenu-generic-expression
+;;   `(("*Functions*" ,quakec--function-re 1)
+;;     ("*Methods*" ,quakec--method-re 1)
+;;     ("*Globals*" ,quakec--global-variable-re 1)
+;;     ("*Fields*" ,quakec--field-re 1))
+;;   "Imenu generic expression for `quakec-mode'.")
 
 ;;
 ;;; Eldoc
@@ -685,7 +697,7 @@ respect to the project root."
 
   ;; Imenu
   (setq imenu-case-fold-search t)
-  (setq imenu-generic-expression quakec--imenu-generic-expression)
+  (setq imenu-create-index-function #'quakec--imenu-create-index)
 
   ;; which-function support
   (add-hook 'which-func-functions #'quakec--which-func nil 'local)
