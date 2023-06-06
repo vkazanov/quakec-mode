@@ -358,15 +358,6 @@ something like \".void(\".")
                       (group-n 1 (regexp ,quakec--name-re))))
   "A regexp catching an entity field declaration.")
 
-(defvar quakec--definitions-re
-  (rx-to-string `(or (regexp ,quakec--function-re)
-                     (regexp ,quakec--method-re)
-                     (regexp ,quakec--global-variable-re)
-                     (regexp ,quakec--field-re)))
-  "A regexp catching all global definitions in a file.
-
-Regexp group 1 should always be the name of the symbol.")
-
 ;;
 ;;; Syntax highlighting (font-lock)
 ;;
@@ -394,10 +385,8 @@ Regexp group 1 should always be the name of the symbol.")
 ;;; Cached definition lookup
 ;;
 
-;; TODO: to be reused across all defintion-based facilities
-;;
 (cl-defstruct (quakec--definition (:constructor nil)
-                                  (:constructor quakec--definition-create (name beg end signature))
+                                  (:constructor quakec--definition-create (name beg end signature deftype))
                                   (:copier nil))
   "A definition location and signature meant to be used in various
 quakec-mode facilities relying on defition search."
@@ -410,15 +399,45 @@ quakec-mode facilities relying on defition search."
   "Update the cache of QuakeC definitions."
   (setq quakec--definitions-cache (make-hash-table :test 'equal))
   (save-excursion
+
     (goto-char (point-min))
-    (while (re-search-forward quakec--definitions-re nil t)
-      ;; not a comment
+    (while (re-search-forward quakec--function-re nil t)
       (unless (nth 4 (syntax-ppss))
         (let* ((name (match-string-no-properties 1))
                (beg (match-beginning 0))
                (end (match-end 0))
                (signature (match-string 0))
-               (def (quakec--definition-create name beg end signature)))
+               (def (quakec--definition-create name beg end signature 'function)))
+          (puthash name def quakec--definitions-cache))))
+
+    (goto-char (point-min))
+    (while (re-search-forward quakec--method-re nil t)
+      (unless (nth 4 (syntax-ppss))
+        (let* ((name (match-string-no-properties 1))
+               (beg (match-beginning 0))
+               (end (match-end 0))
+               (signature (match-string 0))
+               (def (quakec--definition-create name beg end signature 'method)))
+          (puthash name def quakec--definitions-cache))))
+
+    (goto-char (point-min))
+    (while (re-search-forward quakec--global-variable-re nil t)
+      (unless (nth 4 (syntax-ppss))
+        (let* ((name (match-string-no-properties 1))
+               (beg (match-beginning 0))
+               (end (match-end 0))
+               (signature (match-string 0))
+               (def (quakec--definition-create name beg end signature 'global)))
+          (puthash name def quakec--definitions-cache))))
+
+    (goto-char (point-min))
+    (while (re-search-forward quakec--field-re nil t)
+      (unless (nth 4 (syntax-ppss))
+        (let* ((name (match-string-no-properties 1))
+               (beg (match-beginning 0))
+               (end (match-end 0))
+               (signature (match-string 0))
+               (def (quakec--definition-create name beg end signature 'field)))
           (puthash name def quakec--definitions-cache))))))
 
 (defun quakec--get-definition-positions ()
