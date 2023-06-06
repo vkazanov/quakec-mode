@@ -259,19 +259,19 @@ header is updated with the correct information and written at the beginning of t
   - [ ] see coffee-mode for how to provide customize interfaces, compilation commands,
     setup hideshow minor mode, etc
 
-  - [ ] put together a list of things necessary for a release on public repos, also the
+  - [-] put together a list of things necessary for a release on public repos, also the
     next one
 
-    - both function definition styles
+    - [X] unified local definition cache (xref, eldoc, capf, imenu)
 
-    - go through, say, 5 top mod codebase to check compatibility, extract features
+    - [ ] both function definition styles
+
+    - [ ] go through, say, 5 top mod codebase to check compatibility, extract features
       necessary for proper work
 
-      - FTEQCC dialect support?
+    - [ ] definition search in open current project buffers
 
-    - unified local definition cache (xref, eldoc, capf, imenu)
-
-    - definition search in open current project buffers
+    - [ ] FTEQCC dialect support?
 
   - [ ] broader dialect support
 
