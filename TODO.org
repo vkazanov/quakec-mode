@@ -35,6 +35,10 @@
 
    - dev kit: progs_dump (https://github.com/progs-dump-dev/progs_dump)
 
+   - base mod: Alkaline
+
+   - base mod: Copper
+
  - maintained engines: FTE, Quakespams, Ironwail, vkquake
 
    - engine overview: https://www.slipseer.com/index.php?threads/quake-engines-source-ports-a-beginners-guide.11/
@@ -280,6 +284,8 @@ header is updated with the correct information and written at the beginning of t
     - [ ] go through, say, 5 top mod codebases to check compatibility, extract features
       necessary for proper work (client-side QC, extensions, etc)
 
+      - AD, Dwell, Copper, Alkaline, progs_dump
+
   - [ ] broader dialect support
 
     - [ ] full fteqcc dialect
@@ -299,8 +305,6 @@ header is updated with the correct information and written at the beginning of t
   - [ ] hideshow
 
   - [ ] publish the package
-
-  - [ ] c-style functions? better dialect support?
 
   - [ ] enforce emacs lisp coding conventions
 
