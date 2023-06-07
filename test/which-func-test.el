@@ -15,7 +15,7 @@
 // void() TestFunction2;
 
 /* a declaration */
-void() TestFunction3;
+void TestFunction3(void) ;
 
 /* a definition */
 float(entity targ, entity inflictor) TestFunction4 =

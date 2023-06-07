@@ -227,6 +227,10 @@ flymake backend"
 		      (regexp ,quakec--basic-type-re)
 		      (zero-or-more whitespace)
 
+                      ;; maybe name (in C-style)
+                      (opt (regexp ,quakec--name-re)
+                           (zero-or-more whitespace))
+
                       ;; parameter list start
                       "("))
   "A regexp catching the prefix of function declaration.")
@@ -246,7 +250,7 @@ flymake backend"
                       (group-n 1 (regexp ,quakec--name-re))))
   "A regexp catching a single function formal parameter.")
 
-(defvar quakec--function-re
+(defvar quakec--function-qc-re
   (rx-to-string `(seq line-start (zero-or-more whitespace)
 		      ;; return type
 		      (regexp ,quakec--basic-type-re)
@@ -258,12 +262,27 @@ flymake backend"
 
 		      ;; function name
 		      (group-n 1 (regexp ,quakec--name-re))))
-  "A regexp catching a function name.")
+  "A regexp catching a QuakeC-style function name.")
+
+(defvar quakec--function-c-re
+  (rx-to-string `(seq line-start (zero-or-more whitespace)
+		      ;; return type
+		      (regexp ,quakec--basic-type-re)
+		      (zero-or-more whitespace)
+
+                      ;; function name
+		      (group-n 1 (regexp ,quakec--name-re))
+                      (zero-or-more whitespace)
+
+		      ;; parameter list
+		      "(" (zero-or-more (regexp ".")) ")"
+		      ))
+  "A regexp catching a C-style function name.")
 
 (defvar quakec--function-frame-params-re
   (rx-to-string `(seq
                   ;; a usual function as a prefix
-                  (regexp ,quakec--function-re)
+                  (regexp ,quakec--function-qc-re)
 
                   ;; followed by 2 additional parameters
                   (zero-or-more whitespace) "="
@@ -289,12 +308,16 @@ flymake backend"
 		      (regexp ,quakec--basic-type-re)
 		      (zero-or-more whitespace)
 
+                      ;; maybe name (in C-style)
+                      (opt (regexp ,quakec--name-re)
+                           (zero-or-more whitespace))
+
                       ;; parameter list start
                       "("))
   "A regexp catching the prefix of a method declaration, i.e.
 something like \".void(\".")
 
-(defvar quakec--method-re
+(defvar quakec--method-qc-re
   (rx-to-string `(seq line-start (zero-or-more whitespace)
                       "."
 
@@ -308,7 +331,23 @@ something like \".void(\".")
 
 		      ;; method name
 		      (group-n 1 (regexp ,quakec--name-re))))
-  "A regexp catching a method name.")
+  "A regexp catching a QuakeC-style method name.")
+
+(defvar quakec--method-c-re
+  (rx-to-string `(seq line-start (zero-or-more whitespace)
+                      "."
+
+		      ;; return type
+		      (regexp ,quakec--basic-type-re)
+		      (zero-or-more whitespace)
+
+                      ;; method name
+		      (group-n 1 (regexp ,quakec--name-re))
+
+		      ;; parameter list
+		      "(" (zero-or-more (regexp ".")) ")"
+		      (zero-or-more whitespace)))
+  "A regexp catching a C-style method name.")
 
 
 (defvar quakec--global-variable-re
@@ -318,7 +357,16 @@ something like \".void(\".")
                       (zero-or-more whitespace)
 
                       ;; variable name
-                      (group-n 1 (regexp ,quakec--name-re))))
+                      (group-n 1 (regexp ,quakec--name-re))
+                      (zero-or-more whitespace)
+
+                      ;; init or the lack of it
+                      (opt "=" (zero-or-more whitespace)
+                           (regexp ".+"))
+
+                      ;; but that's it
+                      ";"
+                      ))
   "A regexp catching a global variable declaration.")
 
 (defvar quakec--local-variable-re
@@ -332,7 +380,16 @@ something like \".void(\".")
                       (zero-or-more whitespace)
 
                       ;; variable name
-                      (group-n 1 (regexp ,quakec--name-re))))
+                      (group-n 1 (regexp ,quakec--name-re))
+                      (zero-or-more whitespace)
+
+                      ;; init or the lack of it
+                      (opt "=" (zero-or-more whitespace)
+                           (regexp ".+"))
+
+                      ;; but that's it
+                      ";"
+                      ))
   "A regexp catching a local variable declaration.")
 
 (defvar quakec--variable-name-re
@@ -355,7 +412,16 @@ something like \".void(\".")
                       (zero-or-more whitespace)
 
                       ;; variable name
-                      (group-n 1 (regexp ,quakec--name-re))))
+                      (group-n 1 (regexp ,quakec--name-re))
+                      (zero-or-more whitespace)
+
+                      ;; init or the lack of it
+                      (opt "=" (zero-or-more whitespace)
+                           (regexp ".+"))
+
+                      ;; but that's it
+                      ";"
+                      ))
   "A regexp catching an entity field declaration.")
 
 ;;
@@ -374,8 +440,10 @@ something like \".void(\".")
                                 (,quakec--variable-name-re nil nil (1 'quakec-variable-name-face)))
     (,quakec--field-re (1 'quakec-variable-name-face)
                        (,quakec--variable-name-re nil nil (1 'quakec-variable-name-face)))
-    (,quakec--function-re . (1 'quakec-function-name-face ))
-    (,quakec--method-re . (1 'quakec-function-name-face ))
+    (,quakec--function-c-re . (1 'quakec-function-name-face ))
+    (,quakec--function-qc-re . (1 'quakec-function-name-face ))
+    (,quakec--method-c-re . (1 'quakec-function-name-face ))
+    (,quakec--method-qc-re . (1 'quakec-function-name-face ))
     (,quakec--function-parameter-left-re (,quakec--function-parameter-re nil nil (1 'quakec-variable-name-face)))
     (,quakec--method-parameter-left-re (,quakec--function-parameter-re nil nil (1 'quakec-variable-name-face)))
     (,quakec--function-frame-params-re (2 'quakec-variable-name-face)
@@ -401,8 +469,10 @@ quakec-mode facilities relying on defition search."
   (save-excursion
     (cl-loop
      for (deftyp defre)
-     in `((function ,quakec--function-re)
-          (method ,quakec--method-re)
+     in `((function ,quakec--function-qc-re)
+          (function ,quakec--function-c-re)
+          (method ,quakec--method-qc-re)
+          (method ,quakec--method-c-re)
           (global ,quakec--global-variable-re)
           (field ,quakec--field-re))
      do
@@ -514,8 +584,10 @@ point."
       ;; Move to the beginning of the current defun
       (beginning-of-defun)
       ;; Check if we are within a function body
-      (if (and (or (looking-at quakec--function-re)
-                   (looking-at quakec--method-re))
+      (if (and (or (looking-at quakec--function-qc-re)
+                   (looking-at quakec--function-c-re)
+                   (looking-at quakec--method-qc-re)
+                   (looking-at quakec--method-c-re))
                (save-match-data
                  (end-of-defun)
                  (<= original-position (point))))

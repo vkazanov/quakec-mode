@@ -36,7 +36,7 @@ float	time;
            'quakec-builtin-face)))
 
 
-(ert-deftest font-lock-functions-test ()
+(ert-deftest font-lock-functions-qc-style-test ()
   (should (assess-face-at=
            "
 float() Function1;
@@ -54,8 +54,26 @@ a + b;
            'quakec-mode '("Function1" "Function2" "Function3" "Method4")
            'quakec-function-name-face)))
 
+(ert-deftest font-lock-functions-c-style-test ()
+  (should (assess-face-at=
+           "
+float Function1(void);
 
-(ert-deftest font-lock-function-params-test ()
+float Function2(void) = {
+};
+
+entity Function3(void) = [$param1, $param2] {
+};
+
+.vector Method4(void) = {
+a + b;
+};
+"
+           'quakec-mode '("Function1" "Function2" "Function3" "Method4")
+           'quakec-function-name-face)))
+
+
+(ert-deftest font-lock-function-c-style-params-test ()
   (should (assess-face-at=
            "
 float(float param1, float param2, vector param3) Function1;
@@ -71,6 +89,31 @@ float(float param10) Function2;
 .float(float param11) Method1;;
 
 .float(float param12, float param13) Method1;;
+
+
+"
+           'quakec-mode '("param1" "param2" "param3"
+                          "param4" "param5" "param6"
+                          "param7" "param8" "param9"
+                          "param10" "param11" "param12" "param13")
+           'quakec-variable-name-face)))
+
+(ert-deftest font-lock-function-qc-style-params-test ()
+  (should (assess-face-at=
+           "
+float Function1(float param1, float param2, vector param3);
+
+float Function2(float param4, float param5, vector param6) = {
+};
+
+entity Function3(float param7, vector param8, entity param9)  = [$arg1, $arg2] {
+};
+
+float Function2(float param10) ;
+
+.float Method1(float param11) ;;
+
+.float Method1(float param12, float param13) ;;
 
 
 "

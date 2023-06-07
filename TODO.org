@@ -264,14 +264,21 @@ header is updated with the correct information and written at the beginning of t
 
     - [X] unified local definition cache (xref, eldoc, capf, imenu)
 
-    - [ ] both function definition styles
+    - [X] both c-style and qc-style function definition styles
 
-    - [ ] go through, say, 5 top mod codebase to check compatibility, extract features
-      necessary for proper work
+    - [ ] definition search in current project buffer + always inject definitions from
+      defs.qc
 
-    - [ ] definition search in open current project buffers
+      - defs.qc should work for Eldoc
 
-    - [ ] FTEQCC dialect support?
+      - defs.qc should work for xref
+
+      - defs.qc SHOULDN'T work for imenu (or maybe i can use a special function??)
+
+      - defs.qc should work for capf
+
+    - [ ] go through, say, 5 top mod codebases to check compatibility, extract features
+      necessary for proper work (client-side QC, extensions, etc)
 
   - [ ] broader dialect support
 
@@ -288,8 +295,6 @@ header is updated with the correct information and written at the beginning of t
       - [ ] preprocessing?
 
   - [ ] flycheck
-
-  - [ ] reuse definition cache between xref and eldoc (and imenu?)
 
   - [ ] hideshow
 
