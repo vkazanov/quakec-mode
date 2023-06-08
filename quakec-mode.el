@@ -454,19 +454,53 @@ something like \".void(\".")
 ;;
 
 (cl-defstruct (quakec--definition (:constructor nil)
-                                  (:constructor quakec--definition-create (name file beg end signature deftype))
+                                  (:constructor quakec--definition-create (name file beg end line col signature deftype))
                                   (:copier nil))
   "A definition location and signature meant to be used in various
 quakec-mode facilities relying on defition search."
-  name file beg end signature deftype)
+  name
+  file
+  beg end
+  line col
+  signature
+  deftype)
 
 (defvar-local quakec--buffer-definitions-cache nil
   "A cache of QuakeC definitions in the current buffer mapping id
 names to lists of name definitions.")
 
-(defun quakec--update-buffer-definitions ()
-  "Update the cache of QuakeC definitions."
-  (setq quakec--buffer-definitions-cache (make-hash-table :test 'equal))
+(defun quakec--update-definitions ()
+  (let ((newcache (make-hash-table :test 'equal))
+        (externaldefs '("defs.qc" "world.qc")))
+
+    ;; do not look for project files when not in a project
+    (when (quakec--project-p)
+      ;; TODO: extract defcustoms
+      (dolist (projfpath externaldefs)
+        ;; TODO: make sure imenu et al do not pick up external symbol
+        ;; TODO: tests
+
+        ;; Only inject external defintions when its not the current
+        ;; buffer that's injected and the file exists. Also skip
+        ;; recursing if visiting special external files
+        ;;
+        (when (and (quakec--project-file-exists projfpath)
+                   (not (member (quakec--relative-path) externaldefs)))
+          (save-excursion
+            (find-file (quakec--project-file-path projfpath))
+
+            ;; extract extra definitions
+            (quakec--update-buffer-definitions newcache)
+
+            (kill-buffer (current-buffer))))))
+
+    ;; do read local definitinos either way
+    (quakec--update-buffer-definitions newcache)
+
+    (setq quakec--buffer-definitions-cache newcache)))
+
+(defun quakec--update-buffer-definitions (cache-ht)
+  "Fill the buffer-local QuakeC definitions CACHE-HT (a hash table)."
   (save-excursion
     (cl-loop
      for (deftyp defre)
@@ -484,9 +518,16 @@ names to lists of name definitions.")
                 (file (buffer-file-name))
                 (beg (match-beginning 0))
                 (end (match-end 0))
+                (line (line-number-at-pos))
+                ;; TODO: just save 0 for now
+                (col 0)
                 (signature (match-string 0))
-                (newdef (quakec--definition-create name file beg end signature deftyp)))
-           (push newdef (gethash name quakec--buffer-definitions-cache))))))))
+                (newdef (quakec--definition-create
+                         name file
+                         beg end
+                         line col
+                         signature deftyp)))
+           (push newdef (gethash name cache-ht))))))))
 
 (defun quakec--get-definition-positions (definition-type)
   "Retrieve a list all known buffer definitions of DEFINITION-TYPE
@@ -537,14 +578,11 @@ mapped to positions in cons cells."
     (dolist (def (quakec--find-buffer-definitions identifier))
       (when-let ((pos (quakec--definition-beg def))
                  (file (quakec--definition-file def))
+                 (line (quakec--definition-line def))
+                 (col (quakec--definition-col def))
                  (fileloc (xref-make
                            identifier
-                           (xref-make-file-location
-                            file
-                            ;; line number and 0 column be default (as
-                            ;; there is no way in emacs to quickly look up
-                            ;; column based on position
-                            (line-number-at-pos pos t) 0))))
+                           (xref-make-file-location file line col))))
         (push fileloc matches)))
     matches))
 
@@ -589,7 +627,7 @@ point."
 (defun quakec--after-save-hook ()
   "Update QuakeC definitions cache after saving the file."
   (when (eq major-mode 'quakec-mode)
-    (quakec--update-buffer-definitions)))
+    (quakec--update-definitions)))
 
 ;;
 ;;; Which function mode support
@@ -627,10 +665,22 @@ if not in a project."
       (user-error "Not in a QuakeC project"))
     root))
 
+(defun quakec--project-p ()
+  "Check if working within a QuakeC project, indicated by the
+`quakec-project-source' (`progs.src') file. "
+  (let ((root (locate-dominating-file
+               (or (buffer-file-name) default-directory)
+               quakec-project-source)))
+    root))
+
+(defun quakec--project-file-path (fpath)
+  "Return an absolute path for a project-relative FPATH."
+  (expand-file-name fpath (quakec--find-project-root)))
+
 (defun quakec--project-file-exists (fpath)
   "Return t if file exists in the current project using a FPATH
 relative to the project root."
-  (file-exists-p (expand-file-name fpath (quakec--find-project-root))))
+  (file-exists-p (quakec--project-file-path fpath)))
 
 (defun quakec--relative-path (&optional fpath)
   "Create a relative path for current buffer's file or FPATH with
@@ -798,7 +848,7 @@ respect to the project root."
   ;; Eldoc setup
   (add-hook 'after-save-hook #'quakec--after-save-hook nil 'local)
   (setq-local eldoc-documentation-function #'quakec--eldoc-function)
-  (quakec--update-buffer-definitions)
+  (quakec--update-definitions)
 
   ;; Compile defaults setup
   (setq-local compile-command quakec-compile-command))
