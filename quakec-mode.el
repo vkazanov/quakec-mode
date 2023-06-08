@@ -49,6 +49,11 @@ directory."
   :type 'string
   :group 'quakec-mode)
 
+(defcustom quakec-project-definition-files '("defs.qc" "world.qc")
+  "A list of file paths relative to the project root to use for
+completion and definition lookups."
+  :type '(repeat string)
+  :group 'quakec-mode)
 
 (defcustom quakec-compile-command quakec-fteqcc-compile-command
   "A default command to use for compiling QuakeC project."
@@ -471,14 +476,11 @@ names to lists of name definitions.")
 
 (defun quakec--update-definitions ()
   (let ((newcache (make-hash-table :test 'equal))
-        (externaldefs '("defs.qc" "world.qc")))
+        (externaldefs quakec-project-definition-files))
 
     ;; do not look for project files when not in a project
     (when (quakec--project-p)
-      ;; TODO: extract defcustoms
       (dolist (projfpath externaldefs)
-        ;; TODO: make sure imenu et al do not pick up external symbol
-        ;; TODO: tests
 
         ;; Only inject external defintions when its not the current
         ;; buffer that's injected and the file exists. Also skip
