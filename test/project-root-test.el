@@ -46,5 +46,26 @@
       (assess-with-find-file "f4"
         (should-error (quakec--find-project-root))))))
 
+(ert-deftest project-file-exists-test ()
+  (assess-with-filesystem
+      '("proj/progs.src"
+
+        ;; project files
+        "proj/f0.qc"
+        "proj/dir1/f1.qc"
+        "proj/dir1/dir2/f2.qc"
+
+        ;; outside of the project
+        "outside.qc")
+
+    (assess-with-find-file "proj/f0.qc"
+      (should (quakec--project-file-exists "f0.qc"))
+      (should (quakec--project-file-exists "dir1/f1.qc"))
+      (should (quakec--project-file-exists "dir1/dir2/f2.qc"))
+      (should-not (quakec--project-file-exists "outside.qc")))
+
+    (assess-with-find-file "outside.qc"
+      (should-error (quakec--project-file-exists "outside.qc")))))
+
 
 ;;; project-root-test.el ends here

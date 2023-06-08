@@ -464,7 +464,7 @@ quakec-mode facilities relying on defition search."
   "A cache of QuakeC definitions in the current buffer mapping id
 names to lists of name definitions.")
 
-(defun quakec--update-definitions ()
+(defun quakec--update-buffer-definitions ()
   "Update the cache of QuakeC definitions."
   (setq quakec--buffer-definitions-cache (make-hash-table :test 'equal))
   (save-excursion
@@ -500,12 +500,12 @@ mapped to positions in cons cells."
                        defpositions))))
     defpositions))
 
-(defun quakec--get-definition-names ()
+(defun quakec--get-buffer-definition-names ()
   "Retrieve all known buffer definition names."
   (hash-table-keys quakec--buffer-definitions-cache))
 
-(defun quakec--find-definitions (name)
-  "Retrieve a definition list from definition cache by NAME."
+(defun quakec--find-buffer-definitions (name)
+  "Retrieve a NAME definition list from definition cache by NAME."
   (gethash name quakec--buffer-definitions-cache))
 
 ;;
@@ -518,7 +518,7 @@ mapped to positions in cons cells."
     (setq symbol-bounds (bounds-of-thing-at-point 'symbol))
     (when (and (setq symbols-start (car symbol-bounds))
                (setq symbols-end (cdr symbol-bounds)))
-      (setq complete-function (lambda (_) (quakec--get-definition-names)))
+      (setq complete-function (lambda (_) (quakec--get-buffer-definition-names)))
       (list symbols-start symbols-end
             (completion-table-dynamic complete-function)
             :exclusive 'no))))
@@ -534,7 +534,7 @@ mapped to positions in cons cells."
 (defun quakec--xref-find-definitions (identifier)
   "Find definitions of an IDENTIFIER in the current buffer."
   (let (matches)
-    (dolist (def (quakec--find-definitions identifier))
+    (dolist (def (quakec--find-buffer-definitions identifier))
       (when-let ((pos (quakec--definition-beg def))
                  (file (quakec--definition-file def))
                  (fileloc (xref-make
@@ -581,7 +581,7 @@ as required by `imenu-create-index-function'."
 point."
   (when-let*
       ((symbol-name (thing-at-point 'symbol 'no-props))
-       (deflist (quakec--find-definitions symbol-name))
+       (deflist (quakec--find-buffer-definitions symbol-name))
        ;; just pick the first definition in the list of definitions
        (def (car deflist)))
     (quakec--definition-signature def)))
@@ -589,7 +589,7 @@ point."
 (defun quakec--after-save-hook ()
   "Update QuakeC definitions cache after saving the file."
   (when (eq major-mode 'quakec-mode)
-    (quakec--update-definitions)))
+    (quakec--update-buffer-definitions)))
 
 ;;
 ;;; Which function mode support
@@ -626,6 +626,11 @@ if not in a project."
     (unless root
       (user-error "Not in a QuakeC project"))
     root))
+
+(defun quakec--project-file-exists (fpath)
+  "Return t if file exists in the current project using a FPATH
+relative to the project root."
+  (file-exists-p (expand-file-name fpath (quakec--find-project-root))))
 
 (defun quakec--relative-path (&optional fpath)
   "Create a relative path for current buffer's file or FPATH with
@@ -793,7 +798,7 @@ respect to the project root."
   ;; Eldoc setup
   (add-hook 'after-save-hook #'quakec--after-save-hook nil 'local)
   (setq-local eldoc-documentation-function #'quakec--eldoc-function)
-  (quakec--update-definitions)
+  (quakec--update-buffer-definitions)
 
   ;; Compile defaults setup
   (setq-local compile-command quakec-compile-command))
