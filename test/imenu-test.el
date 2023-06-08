@@ -81,5 +81,20 @@ float Global2 = 10;
      (should (alist-get "Field1" field-index-alist nil nil #'string-equal))
      (should (alist-get "Field2" field-index-alist nil nil #'string-equal)))))
 
+(ert-deftest imenu-buffer-definitions-test ()
+  (assess-with-filesystem
+      '("proj/progs.src"
+
+        ;; project files
+        ("proj/defs.qc" "float ext1;")
+        ("proj/world.qc" "entity ext2;")
+        ("proj/f.qc" "float def1;"))
+    (assess-with-find-file "proj/f.qc"
+      (let* ((index-alist (quakec--imenu-create-index))
+             (globals-alist (alist-get "*Globals*" index-alist nil nil #'string-equal)))
+        ;; imenu should only list file-local definitions
+        (should (equal (length globals-alist) 1))
+        (should (alist-get "def1" globals-alist nil nil #'string-equal))))))
+
 (provide 'imenu-test)
 ;;; imenu-test.el ends here

@@ -536,7 +536,8 @@ mapped to positions in cons cells."
     (cl-loop for deflist being the hash-values of quakec--buffer-definitions-cache
              do
              (dolist (def deflist)
-               (when (eq (quakec--definition-deftype def) definition-type)
+               (when (and (eq (quakec--definition-deftype def) definition-type)
+                          (equal (quakec--definition-file def) (buffer-file-name)))
                  (push (cons (quakec--definition-name def) (quakec--definition-beg def))
                        defpositions))))
     defpositions))
