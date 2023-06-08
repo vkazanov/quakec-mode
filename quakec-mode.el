@@ -527,7 +527,7 @@ mapped to positions in cons cells."
 
 (defun quakec--xref-find-definitions (identifier)
   "Find definitions of an IDENTIFIER in the current buffer."
-  (let ((matches (list)))
+  (let (matches)
     (when-let ((def (quakec--find-definition identifier))
                (pos (quakec--definition-beg def))
                (file (quakec--definition-file def))
@@ -539,8 +539,7 @@ mapped to positions in cons cells."
                           ;; there is no way in emacs to quickly look up
                           ;; column based on position
                           (line-number-at-pos pos t) 0))))
-      (push fileloc matches)
-      matches)))
+      (push fileloc matches))))
 
 (cl-defmethod xref-backend-definitions ((backend (eql quakec)) identifier)
   "QuakeC file-level definition finding Xref BACKEND.
