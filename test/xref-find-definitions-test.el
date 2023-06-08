@@ -27,7 +27,6 @@ float(entity targ, entity inflictor) Declared =
         (should (equal (xref-item-summary (nth 0 defs)) "Declared"))
         (should (equal (xref-item-summary (nth 1 defs)) "Declared"))))))
 
-
 (ert-deftest xref-find-definitions-global-variable-test ()
   (assess-with-filesystem
       '(("test.qc" "
@@ -120,6 +119,18 @@ float DeclaredGlobalVar;
 
         (should (equal (length defs-method) 1))
         (should (equal (xref-item-summary (nth 0 defs-method)) "DeclaredMethod"))))))
+
+(ert-deftest xref-find-definitions-external-test ()
+  (assess-with-filesystem
+      '("progs.src"
+        ("world.qc" "float worldDef;")
+        ("defs.qc" "float defsDef;")
+        ("test.qc" "float curDef;"))
+    (assess-with-find-file "test.qc"
+      ;; both external and internal definitions should be available
+      (should (quakec--xref-find-definitions "worldDef"))
+      (should (quakec--xref-find-definitions "defsDef"))
+      (should (quakec--xref-find-definitions "curDef")))))
 
 
 

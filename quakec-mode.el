@@ -475,12 +475,16 @@ quakec-mode facilities relying on defition search."
 names to lists of name definitions.")
 
 (defun quakec--update-definitions ()
-  (let ((newcache (make-hash-table :test 'equal))
-        (externaldefs quakec-project-definition-files))
+  (let ((externaldefs quakec-project-definition-files)
+        newcache)
+
+    ;; Check for definitions in important external files
+    ;;
 
     ;; do not look for project files when not in a project
     (when (quakec--project-p)
       (dolist (projfpath externaldefs)
+        ;; (message "fpath: %s" projfpath)
 
         ;; Only inject external defintions when its not the current
         ;; buffer that's injected and the file exists. Also skip
@@ -489,16 +493,26 @@ names to lists of name definitions.")
         (when (and (quakec--project-file-exists projfpath)
                    (not (member (quakec--relative-path) externaldefs)))
           (save-excursion
-            (find-file (quakec--project-file-path projfpath))
+            ;; check if the file is already visited by a buf
+            (let* ((abspath (quakec--project-file-abs-path projfpath))
+                   (keep (find-buffer-visiting abspath)))
 
-            ;; extract extra definitions
-            (quakec--update-buffer-definitions newcache)
+              ;; This should extract definitions for the external file
+              (find-file abspath)
 
-            (kill-buffer (current-buffer))))))
+              ;; TODO: this runs definition retrieval a second time. FIX!
+              (setq newcache (or newcache (make-hash-table :test 'equal)))
+              (quakec--update-buffer-definitions newcache)
 
-    ;; do read local definitinos either way
+              ;; only kill the file buffer if the file wasn't openned
+              ;; yet
+              (unless keep (kill-buffer)))))))
+
+    ;; Now check the current buffer definitions
+    ;;
+
+    (setq newcache (or newcache (make-hash-table :test 'equal)))
     (quakec--update-buffer-definitions newcache)
-
     (setq quakec--buffer-definitions-cache newcache)))
 
 (defun quakec--update-buffer-definitions (cache-ht)
@@ -676,21 +690,20 @@ if not in a project."
                quakec-project-source)))
     root))
 
-(defun quakec--project-file-path (fpath)
+(defun quakec--project-file-abs-path (fpath)
   "Return an absolute path for a project-relative FPATH."
   (expand-file-name fpath (quakec--find-project-root)))
 
 (defun quakec--project-file-exists (fpath)
   "Return t if file exists in the current project using a FPATH
 relative to the project root."
-  (file-exists-p (quakec--project-file-path fpath)))
+  (file-exists-p (quakec--project-file-abs-path fpath)))
 
 (defun quakec--relative-path (&optional fpath)
   "Create a relative path for current buffer's file or FPATH with
 respect to the project root."
-  (unless fpath
-    (setq fpath (buffer-file-name (current-buffer))))
-  (file-relative-name fpath (quakec--find-project-root)))
+  (file-relative-name (or fpath (buffer-file-name))
+                      (quakec--find-project-root)))
 
 ;;
 ;;; On-the-fly syntax checking
