@@ -281,6 +281,8 @@ header is updated with the correct information and written at the beginning of t
 
       - defs.qc/world.qc should work for capf
 
+    - [ ] eldoc not working within functions? More tests for all cases necessary
+
     - [ ] go through, say, 5 top mod codebases to check compatibility, extract features
       necessary for proper work (client-side QC, extensions, etc)
 
