@@ -23,7 +23,9 @@ float(entity targ, entity inflictor) Declared =
 "))
     (assess-with-find-file "test.qc"
       (let ((defs (quakec--xref-find-definitions "Declared")))
-        (should (equal (xref-item-summary (nth 0 defs)) "Declared"))))))
+        (should (equal (length defs) 2))
+        (should (equal (xref-item-summary (nth 0 defs)) "Declared"))
+        (should (equal (xref-item-summary (nth 1 defs)) "Declared"))))))
 
 
 (ert-deftest xref-find-definitions-global-variable-test ()

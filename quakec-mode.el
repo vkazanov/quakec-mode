@@ -461,7 +461,8 @@ quakec-mode facilities relying on defition search."
   name file beg end signature deftype)
 
 (defvar-local quakec--buffer-definitions-cache nil
-  "A cache of QuakeC definitions in the current buffer.")
+  "A cache of QuakeC definitions in the current buffer mapping id
+names to lists of name definitions.")
 
 (defun quakec--update-definitions ()
   "Update the cache of QuakeC definitions."
@@ -484,22 +485,27 @@ quakec-mode facilities relying on defition search."
                 (beg (match-beginning 0))
                 (end (match-end 0))
                 (signature (match-string 0))
-                (def (quakec--definition-create name file beg end signature deftyp)))
-           (puthash name def quakec--buffer-definitions-cache)))))))
+                (newdef (quakec--definition-create name file beg end signature deftyp)))
+           (push newdef (gethash name quakec--buffer-definitions-cache))))))))
 
 (defun quakec--get-definition-positions (definition-type)
   "Retrieve a list all known buffer definitions of DEFINITION-TYPE
 mapped to positions in cons cells."
-  (cl-loop for def being the hash-values of quakec--buffer-definitions-cache
-           if (eq (quakec--definition-deftype def) definition-type)
-           collect (cons (quakec--definition-name def) (quakec--definition-beg def))))
+  (let (defpositions)
+    (cl-loop for deflist being the hash-values of quakec--buffer-definitions-cache
+             do
+             (dolist (def deflist)
+               (when (eq (quakec--definition-deftype def) definition-type)
+                 (push (cons (quakec--definition-name def) (quakec--definition-beg def))
+                       defpositions))))
+    defpositions))
 
 (defun quakec--get-definition-names ()
   "Retrieve all known buffer definition names."
   (hash-table-keys quakec--buffer-definitions-cache))
 
-(defun quakec--find-definition (name)
-  "Retrieve a definition from definition cache by NAME."
+(defun quakec--find-definitions (name)
+  "Retrieve a definition list from definition cache by NAME."
   (gethash name quakec--buffer-definitions-cache))
 
 ;;
@@ -528,18 +534,19 @@ mapped to positions in cons cells."
 (defun quakec--xref-find-definitions (identifier)
   "Find definitions of an IDENTIFIER in the current buffer."
   (let (matches)
-    (when-let ((def (quakec--find-definition identifier))
-               (pos (quakec--definition-beg def))
-               (file (quakec--definition-file def))
-               (fileloc (xref-make
-                         identifier
-                         (xref-make-file-location
-                          file
-                          ;; line number and 0 column be default (as
-                          ;; there is no way in emacs to quickly look up
-                          ;; column based on position
-                          (line-number-at-pos pos t) 0))))
-      (push fileloc matches))))
+    (dolist (def (quakec--find-definitions identifier))
+      (when-let ((pos (quakec--definition-beg def))
+                 (file (quakec--definition-file def))
+                 (fileloc (xref-make
+                           identifier
+                           (xref-make-file-location
+                            file
+                            ;; line number and 0 column be default (as
+                            ;; there is no way in emacs to quickly look up
+                            ;; column based on position
+                            (line-number-at-pos pos t) 0))))
+        (push fileloc matches)))
+    matches))
 
 (cl-defmethod xref-backend-definitions ((backend (eql quakec)) identifier)
   "QuakeC file-level definition finding Xref BACKEND.
@@ -574,7 +581,9 @@ as required by `imenu-create-index-function'."
 point."
   (when-let*
       ((symbol-name (thing-at-point 'symbol 'no-props))
-       (def (quakec--find-definition symbol-name)))
+       (deflist (quakec--find-definitions symbol-name))
+       ;; just pick the first definition in the list of definitions
+       (def (car deflist)))
     (quakec--definition-signature def)))
 
 (defun quakec--after-save-hook ()
