@@ -271,15 +271,15 @@ header is updated with the correct information and written at the beginning of t
     - [X] both c-style and qc-style function definition styles
 
     - [ ] definition search in current project buffer + always inject definitions from
-      defs.qc
+      defs.qc AND world.qc
 
-      - defs.qc should work for Eldoc
+      - defs.qc/world.qc should work for Eldoc
 
-      - defs.qc should work for xref
+      - defs.qc/world.qc should work for xref
 
-      - defs.qc SHOULDN'T work for imenu (or maybe i can use a special function??)
+      - defs.qc/world.qc SHOULDN'T work for imenu (or maybe i can use a special function??)
 
-      - defs.qc should work for capf
+      - defs.qc/world.qc should work for capf
 
     - [ ] go through, say, 5 top mod codebases to check compatibility, extract features
       necessary for proper work (client-side QC, extensions, etc)

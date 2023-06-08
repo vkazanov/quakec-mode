@@ -2,8 +2,8 @@
 (require 'quakec-mode)
 
 (ert-deftest xref-find-definitions-function-test ()
-  (with-quakec-temp-buffer
-   "
+  (assess-with-filesystem
+      '(("test.qc" "
 /* a random multiline comment*/
 
 /* a commented out declaration*/
@@ -20,14 +20,15 @@ float(entity targ, entity inflictor) Declared =
     a = b
 }
 
-"
-   (let ((defs (quakec--xref-find-definitions "Declared")))
-     (should (equal (xref-item-summary (nth 0 defs)) "Declared")))))
+"))
+    (assess-with-find-file "test.qc"
+      (let ((defs (quakec--xref-find-definitions "Declared")))
+        (should (equal (xref-item-summary (nth 0 defs)) "Declared"))))))
 
 
 (ert-deftest xref-find-definitions-global-variable-test ()
-  (with-quakec-temp-buffer
-   "
+  (assess-with-filesystem
+      '(("test.qc" "
 /* a commented out declaration*/
 /* float Commented; */
 
@@ -36,14 +37,15 @@ float(entity targ, entity inflictor) Declared =
 /* a global definition */
 float Global;
 
-"
-   (let ((defs (quakec--xref-find-definitions "Global")))
-     (should (equal (length defs) 1))
-     (should (equal (xref-item-summary (nth 0 defs)) "Global")))))
+"))
+    (assess-with-find-file "test.qc"
+      (let ((defs (quakec--xref-find-definitions "Global")))
+        (should (equal (length defs) 1))
+        (should (equal (xref-item-summary (nth 0 defs)) "Global"))))))
 
 (ert-deftest xref-find-definitions-field-test ()
-  (with-quakec-temp-buffer
-   "
+  (assess-with-filesystem
+      '(("test.qc" "
 /* a commented out declaration*/
 /* .float Commented; */
 
@@ -52,14 +54,15 @@ float Global;
 /* a declaration */
 .float Field;
 
-"
-   (let ((defs (quakec--xref-find-definitions "Field")))
-     (should (equal (length defs) 1))
-     (should (equal (xref-item-summary (nth 0 defs)) "Field")))))
+"))
+    (assess-with-find-file "test.qc"
+      (let ((defs (quakec--xref-find-definitions "Field")))
+        (should (equal (length defs) 1))
+        (should (equal (xref-item-summary (nth 0 defs)) "Field"))))))
 
 (ert-deftest xref-find-definitions-method-test ()
-  (with-quakec-temp-buffer
-   "
+  (assess-with-filesystem
+      '(("test.qc" "
 /* a commented out declaration*/
 /* .void() Commented; */
 
@@ -68,14 +71,15 @@ float Global;
 /* a declaration */
 .void() Method;
 
-"
-   (let ((defs (quakec--xref-find-definitions "Method")))
-     (should (equal (length defs) 1))
-     (should (equal (xref-item-summary (nth 0 defs)) "Method")))))
+"))
+    (assess-with-find-file "test.qc"
+      (let ((defs (quakec--xref-find-definitions "Method")))
+        (should (equal (length defs) 1))
+        (should (equal (xref-item-summary (nth 0 defs)) "Method"))))))
 
 (ert-deftest xref-find-definitions-all-test ()
-  (with-quakec-temp-buffer
-   "
+  (assess-with-filesystem
+      '(("test.qc" "
 /* a random multiline comment*/
 
 /* a commented out declaration*/
@@ -95,24 +99,25 @@ float DeclaredGlobalVar;
 .float DeclaredField;
 .void() DeclaredMethod;
 
-"
-   (let ((defs-func (quakec--xref-find-definitions "DeclaredFunction"))
-         (defs-global-var (quakec--xref-find-definitions "DeclaredGlobalVar"))
-         (defs-local-var (quakec--xref-find-definitions "DeclaredLocalVar"))
-         (defs-field (quakec--xref-find-definitions "DeclaredField"))
-         (defs-method (quakec--xref-find-definitions "DeclaredMethod")))
+"))
+    (assess-with-find-file "test.qc"
+      (let ((defs-func (quakec--xref-find-definitions "DeclaredFunction"))
+            (defs-global-var (quakec--xref-find-definitions "DeclaredGlobalVar"))
+            (defs-local-var (quakec--xref-find-definitions "DeclaredLocalVar"))
+            (defs-field (quakec--xref-find-definitions "DeclaredField"))
+            (defs-method (quakec--xref-find-definitions "DeclaredMethod")))
 
-     (should (equal (length defs-func) 1))
-     (should (equal (xref-item-summary (nth 0 defs-func)) "DeclaredFunction"))
+        (should (equal (length defs-func) 1))
+        (should (equal (xref-item-summary (nth 0 defs-func)) "DeclaredFunction"))
 
-     (should (equal (length defs-global-var) 1))
-     (should (equal (xref-item-summary (nth 0 defs-global-var)) "DeclaredGlobalVar"))
+        (should (equal (length defs-global-var) 1))
+        (should (equal (xref-item-summary (nth 0 defs-global-var)) "DeclaredGlobalVar"))
 
-     (should (equal (length defs-field) 1))
-     (should (equal (xref-item-summary (nth 0 defs-field)) "DeclaredField"))
+        (should (equal (length defs-field) 1))
+        (should (equal (xref-item-summary (nth 0 defs-field)) "DeclaredField"))
 
-     (should (equal (length defs-method) 1))
-     (should (equal (xref-item-summary (nth 0 defs-method)) "DeclaredMethod")))))
+        (should (equal (length defs-method) 1))
+        (should (equal (xref-item-summary (nth 0 defs-method)) "DeclaredMethod"))))))
 
 
 

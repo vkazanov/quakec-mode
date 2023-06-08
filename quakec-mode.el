@@ -454,18 +454,18 @@ something like \".void(\".")
 ;;
 
 (cl-defstruct (quakec--definition (:constructor nil)
-                                  (:constructor quakec--definition-create (name beg end signature deftype))
+                                  (:constructor quakec--definition-create (name file beg end signature deftype))
                                   (:copier nil))
   "A definition location and signature meant to be used in various
 quakec-mode facilities relying on defition search."
-  name beg end signature deftype)
+  name file beg end signature deftype)
 
-(defvar-local quakec--definitions-cache nil
+(defvar-local quakec--buffer-definitions-cache nil
   "A cache of QuakeC definitions in the current buffer.")
 
 (defun quakec--update-definitions ()
   "Update the cache of QuakeC definitions."
-  (setq quakec--definitions-cache (make-hash-table :test 'equal))
+  (setq quakec--buffer-definitions-cache (make-hash-table :test 'equal))
   (save-excursion
     (cl-loop
      for (deftyp defre)
@@ -480,26 +480,27 @@ quakec-mode facilities relying on defition search."
      (while (re-search-forward defre nil t)
        (unless (nth 4 (syntax-ppss))
          (let* ((name (match-string-no-properties 1))
+                (file (buffer-file-name))
                 (beg (match-beginning 0))
                 (end (match-end 0))
                 (signature (match-string 0))
-                (def (quakec--definition-create name beg end signature deftyp)))
-           (puthash name def quakec--definitions-cache)))))))
+                (def (quakec--definition-create name file beg end signature deftyp)))
+           (puthash name def quakec--buffer-definitions-cache)))))))
 
 (defun quakec--get-definition-positions (definition-type)
   "Retrieve a list all known buffer definitions of DEFINITION-TYPE
 mapped to positions in cons cells."
-  (cl-loop for def being the hash-values of quakec--definitions-cache
+  (cl-loop for def being the hash-values of quakec--buffer-definitions-cache
            if (eq (quakec--definition-deftype def) definition-type)
            collect (cons (quakec--definition-name def) (quakec--definition-beg def))))
 
 (defun quakec--get-definition-names ()
   "Retrieve all known buffer definition names."
-  (hash-table-keys quakec--definitions-cache))
+  (hash-table-keys quakec--buffer-definitions-cache))
 
 (defun quakec--find-definition (name)
   "Retrieve a definition from definition cache by NAME."
-  (gethash name quakec--definitions-cache))
+  (gethash name quakec--buffer-definitions-cache))
 
 ;;
 ;;; Completion-at-point backend
@@ -517,20 +518,29 @@ mapped to positions in cons cells."
             :exclusive 'no))))
 
 ;;
-;;; Xref (definitions lookup) support
+;;; Xref-based definition lookup
 ;;
 
 (defun quakec-xref-backend ()
-  "File-local QuakeC Xref backend."
+  "Buffer-local QuakeC Xref backend."
   'quakec)
 
 (defun quakec--xref-find-definitions (identifier)
   "Find definitions of an IDENTIFIER in the current buffer."
   (let ((matches (list)))
     (when-let ((def (quakec--find-definition identifier))
-               (point (quakec--definition-beg def)))
-      (push (xref-make identifier (xref-make-buffer-location (current-buffer) point)) matches))
-    matches))
+               (pos (quakec--definition-beg def))
+               (file (quakec--definition-file def))
+               (fileloc (xref-make
+                         identifier
+                         (xref-make-file-location
+                          file
+                          ;; line number and 0 column be default (as
+                          ;; there is no way in emacs to quickly look up
+                          ;; column based on position
+                          (line-number-at-pos pos t) 0))))
+      (push fileloc matches)
+      matches)))
 
 (cl-defmethod xref-backend-definitions ((backend (eql quakec)) identifier)
   "QuakeC file-level definition finding Xref BACKEND.
