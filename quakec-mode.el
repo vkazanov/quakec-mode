@@ -367,6 +367,10 @@ something like \".void(\".")
 
 (defvar quakec--global-variable-re
   (rx-to-string `(seq line-start
+                      ;; optional type modifier
+                      (opt (regexp ,quakec--type-modifier-keywords-re))
+                      (zero-or-more whitespace)
+
                       ;; global variable type
                       (regexp ,quakec--basic-type-re)
                       (zero-or-more whitespace)
@@ -386,8 +390,8 @@ something like \".void(\".")
 
 (defvar quakec--local-variable-re
   (rx-to-string `(seq line-start (zero-or-more whitespace)
-                      ;; optional local keyword
-                      (opt "local")
+                      ;; optional type modifier
+                      (opt (regexp ,quakec--type-modifier-keywords-re))
                       (zero-or-more whitespace)
 
                       ;; global variable type

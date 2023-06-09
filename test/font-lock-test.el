@@ -11,6 +11,7 @@ float	var2;
 int	var3;
 vector	var4;
 string	var5;
+int var6;
 "
            'quakec-mode '("entity" "float" "int" "vector" "string")
            'quakec-type-face)))
@@ -34,6 +35,23 @@ optional entity var;
            '("const" "var" "noref" "local" "static" "nonstatic" "nosave" "strip" "shared" "optional")
            'quakec-keyword-face)))
 
+
+(ert-deftest font-lock-basic-type-modifiers-test ()
+  (should (assess-face-at=
+           "
+entity	var1;
+float	var2;
+const entity	var3;
+static float	var4;
+"
+           'quakec-mode '("var1"
+                          "var2"
+                          "var3"
+                          "var4")
+           '(quakec-variable-name-face
+             quakec-variable-name-face
+             quakec-variable-name-face
+             quakec-variable-name-face))))
 
 (ert-deftest font-lock-comments-test ()
   (should (assess-face-at=

@@ -364,7 +364,13 @@ header is updated with the correct information and written at the beginning of t
 
       - [X] progs.src - underscore in symbols
 
+      - [X] highlight definitions with type modifiers
+
       - [ ] multiple definitions per line
+
+        - [ ] font-lock
+
+        - [ ] definition lookups
 
   - [ ] see coffee-mode for how to provide customize interfaces, compilation commands,
     setup hideshow minor mode, etc
@@ -372,8 +378,6 @@ header is updated with the correct information and written at the beginning of t
   - [ ] further improvements
 
     - [ ] #define macrofunction() - highlight and symbol
-
-    - [ ] highlight definitions with type modifiers
 
     - [ ] break - keyword or builtin? both, depending on the context (qcc - builtin, fteqcc - keyword)
 
