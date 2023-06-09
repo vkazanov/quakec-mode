@@ -358,24 +358,24 @@ header is updated with the correct information and written at the beginning of t
 
       - [X] cvar multin
 
-      - [ ] #define symbol symbol, #ifdef, #ifndef, #endif, #else)
+      - [X] #define symbol symbol, #ifdef, #ifndef, #endif, #else)
 
-      - [ ] #define macrofunction() - highlight and symbol
-
-      - [ ] #pragma
-
-      - [ ] highlight definitions with type modifiers
+      - [X] #pragma
 
       - [ ] progs.src - underscore in symbols
 
       - [ ] multiple definitions per line
 
-      - [ ] __variant
-
-      - [ ] break - keyword or builtin? both, depending on the context (qcc - builtin, fteqcc - keyword)
-
   - [ ] see coffee-mode for how to provide customize interfaces, compilation commands,
     setup hideshow minor mode, etc
+
+  - [ ] further improvements
+
+    - [ ] #define macrofunction() - highlight and symbol
+
+    - [ ] highlight definitions with type modifiers
+
+    - [ ] break - keyword or builtin? both, depending on the context (qcc - builtin, fteqcc - keyword)
 
   - [ ] broader dialect support
 

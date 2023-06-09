@@ -149,7 +149,7 @@ flymake backend"
 ;;
 
 (defvar quakec--pragmas-re
-  (rx-to-string '(seq line-start (or "#define" "#append" "#undef" "#if" "#ifdef" "#ifndef" "#elif" "#else" "#endif")))
+  (rx-to-string '(seq line-start (or "#define" "#append" "#undef" "#if" "#ifdef" "#ifndef" "#elif" "#else" "#endif" "#pragma")))
   "A regexp matching pragmas.")
 
 (defvar quakec--frame-pragmas-re
