@@ -203,18 +203,35 @@ vector Variable3;
 (ert-deftest font-lock-progs-test ()
   (should (assess-face-at=
            "../outputpath/progs.dat
-includepath/to/include1.qc
+#define TEST
+include_path/to/include1.qc
 include2.qc
-include3.qc
+include_file3.qc
+path/to/include_file4.qc
 "
            'quakec-progs-mode
            '("outputpath"
              "progs.dat"
-             "includepath"
-             "include1")
-           '(quakec-progs-output-path-face
+
+             "#define"
+
+             "include_path"
+             "include1.qc"
+             "include2.qc"
+             "include_file3"
+             "include_file4.qc")
+           '(;; output line
+             quakec-progs-output-path-face
              quakec-progs-output-fname-face
+
+             ;; preprocessor
+             quakec-preprocessor-face
+
+             ;; includes
              quakec-progs-path-face
+             quakec-progs-fname-face
+             quakec-progs-fname-face
+             quakec-progs-fname-face
              quakec-progs-fname-face))))
 
 ;;; font-lock-test.el ends here

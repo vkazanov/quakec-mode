@@ -362,7 +362,7 @@ header is updated with the correct information and written at the beginning of t
 
       - [X] #pragma
 
-      - [ ] progs.src - underscore in symbols
+      - [X] progs.src - underscore in symbols
 
       - [ ] multiple definitions per line
 

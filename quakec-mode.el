@@ -120,7 +120,7 @@ flymake backend"
 
 ;;; progs.src faces
 
-(defvar quakec-progs-output-path-face 'font-lock-string-face)
+(defvar quakec-progs-output-path-face 'quakec-progs-output-path-face)
 (defface quakec-progs-output-path-face
   '((t :inherit font-lock-string-face))
   "Face for paths in QuakeC progs.src files"
@@ -886,14 +886,18 @@ respect to the project root."
 (define-generic-mode quakec-progs-mode
   '("//") ;; comments
   nil     ;; keywords
-  '( ;; the output dat file on the first line
-    ("\\`\\(\\([\\.[:alnum:]]+/\\)*?\\)\\(\\w+\\.dat\\)"
-     (1 'quakec-progs-output-path-face)
-     (3 'quakec-progs-output-fname-face))
+  `(;; pragmas first
+    (,quakec--pragmas-re . quakec-preprocessor-face)
+
+    ;; the output dat file on the first line
+    ("\\`\\(\\([\\.[:alnum:]_]+/\\)*?\\)\\([[:alnum:]_]+\\.dat\\)"
+     (1 quakec-progs-output-path-face)
+     (3 quakec-progs-output-fname-face))
+
     ;; the rest - files to include
-    ("^\\(\\(\\w+/\\)*?\\)\\(\\w+\\.qc\\)"
-     (1 'quakec-progs-path-face)
-     (3 'quakec-progs-fname-face)))
+    ("^\\(\\([[:alnum:]_]+/\\)*?\\)\\([\\.[:alnum:]_]+\\.qc\\)"
+     (1 quakec-progs-path-face)
+     (3 quakec-progs-fname-face)))
   '("\\.src$") ;; auto-mode list
   nil          ;; functions to run
   "A mode for progs.src QuakeC files")
