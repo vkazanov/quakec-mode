@@ -195,10 +195,10 @@ vector Variable3;
 (ert-deftest font-lock-multiple-variables-test ()
   (should (assess-face-at=
            "
-float var1, var2;
-const float var3, var4;
+float var_var1 = 1, var2 = 2.0;
+const float var3, var4, var5;
 "
-           'quakec-mode '("var1" "var2" "var3" "var4")
+           'quakec-mode '("var_var1" "var2" "var3" "var4" "var5")
            'quakec-variable-name-face)))
 
 

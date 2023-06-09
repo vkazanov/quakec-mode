@@ -232,7 +232,7 @@ flymake backend"
   "A regexp catching basic types.")
 
 (defvar quakec--name-re
-  (rx-to-string '(one-or-more (or word "_")))
+  "[[:alpha:]][[:alnum:]_]+\\b"
   "A regexp catching symbol names.")
 
 
@@ -369,8 +369,8 @@ something like \".void(\".")
 (defvar quakec--global-variable-re
   (rx-to-string `(seq line-start
                       ;; optional type modifier
-                      (opt (regexp ,quakec--type-modifier-keywords-re))
-                      (zero-or-more whitespace)
+                      (opt (regexp ,quakec--type-modifier-keywords-re)
+                           (zero-or-more whitespace))
 
                       ;; global variable type
                       (regexp ,quakec--basic-type-re)
@@ -380,9 +380,8 @@ something like \".void(\".")
                       (group-n 1 (regexp ,quakec--name-re))
                       (zero-or-more whitespace)
 
-                      ;; init or the lack of it
-                      (opt "=" (zero-or-more whitespace)
-                           (regexp ".+"))
+                      ;; non function params
+                      (regexp "[^(].+")
 
                       ;; but that's it
                       ";"
@@ -391,9 +390,10 @@ something like \".void(\".")
 
 (defvar quakec--local-variable-re
   (rx-to-string `(seq line-start (zero-or-more whitespace)
+
                       ;; optional type modifier
-                      (opt (regexp ,quakec--type-modifier-keywords-re))
-                      (zero-or-more whitespace)
+                      (opt (regexp ,quakec--type-modifier-keywords-re)
+                           (zero-or-more whitespace))
 
                       ;; global variable type
                       (regexp ,quakec--basic-type-re)
@@ -403,9 +403,8 @@ something like \".void(\".")
                       (group-n 1 (regexp ,quakec--name-re))
                       (zero-or-more whitespace)
 
-                      ;; init or the lack of it
-                      (opt "=" (zero-or-more whitespace)
-                           (regexp ".+"))
+                      ;; non function params
+                      (regexp "[^(].+")
 
                       ;; but that's it
                       ";"
@@ -458,10 +457,14 @@ something like \".void(\".")
     (,quakec--builtins-re . 'quakec-builtin-face)
     ;; TODO: both global and local fail looking for multiple line
     ;; variable definition because of the semicolon in the end of the regexp
-    (,quakec--global-variable-re (1 'quakec-variable-name-face)
-                                 (,quakec--variable-name-re nil nil (1 'quakec-variable-name-face)))
-    (,quakec--local-variable-re (1 'quakec-variable-name-face)
-                                (,quakec--variable-name-re nil nil (1 'quakec-variable-name-face)))
+
+    ;; find a variable definition then go back to first variable name
+    ;; and then look for comma-separated var names
+    (,quakec--global-variable-re
+     (,quakec--variable-name-re (goto-char (match-beginning 1)) nil
+                                (1 'quakec-variable-name-face t)))
+    (,quakec--local-variable-re (goto-char (match-beginning 1)) nil
+                                (1 'quakec-variable-name-face t))
     (,quakec--field-re (1 'quakec-variable-name-face)
                        (,quakec--variable-name-re nil nil (0 'quakec-variable-name-face)))
     (,quakec--function-c-re . (1 'quakec-function-name-face ))
