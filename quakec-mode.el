@@ -173,7 +173,7 @@ flymake backend"
      "aim" "checkclient" "particle"
 
      ;; Console
-     "cvar_set" "dprint" "localcmd"
+     "cvar_set" "dprint" "localcmd" "cvar"
 
      ;; Debug
      "debug" "coredump" "eprint" "error" "objerror" "traceoff" "traceon"
@@ -188,8 +188,10 @@ flymake backend"
      "bprint" "centerprint" "sprint"
 
      ;; Network
-     "WriteAngle" "WriteByte" "WriteChar" "WriteCoord" "WriteEntity" "WriteShort" "WriteString"
-     "multicast"
+     "WriteAngle" "WriteByte" "WriteChar" "WriteCoord" "WriteEntity" "WriteShort" "WriteString" "WriteLong" "multicast"
+
+     "ReadAngle" "ReadByte" "ReadChar" "ReadCoord" "ReadShort" "ReadString" "ReadLong" "ReadFloat"
+
 
      ;; Precaching
      "precache_file" "precache_model" "precache_sound"
