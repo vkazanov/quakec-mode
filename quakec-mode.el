@@ -358,6 +358,7 @@ something like \".void(\".")
 
                       ;; method name
 		      (group-n 1 (regexp ,quakec--name-re))
+		      (zero-or-more whitespace)
 
 		      ;; parameter list
 		      "(" (zero-or-more (regexp ".")) ")"
