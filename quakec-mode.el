@@ -414,7 +414,6 @@ something like \".void(\".")
 (defvar quakec--variable-name-re
   (rx-to-string `(seq (zero-or-more whitespace)
                       ;; optional delimieter
-                      (zero-or-more whitespace)
                       (opt ",")
                       (zero-or-more whitespace)
 
@@ -456,12 +455,14 @@ something like \".void(\".")
     (,quakec--type-modifier-keywords-re . 'quakec-keyword-face)
     (,quakec--constants-re . 'quakec-constant-face)
     (,quakec--builtins-re . 'quakec-builtin-face)
+    ;; TODO: both global and local fail looking for multiple line
+    ;; variable definition because of the semicolon in the end of the regexp
     (,quakec--global-variable-re (1 'quakec-variable-name-face)
                                  (,quakec--variable-name-re nil nil (1 'quakec-variable-name-face)))
     (,quakec--local-variable-re (1 'quakec-variable-name-face)
                                 (,quakec--variable-name-re nil nil (1 'quakec-variable-name-face)))
     (,quakec--field-re (1 'quakec-variable-name-face)
-                       (,quakec--variable-name-re nil nil (1 'quakec-variable-name-face)))
+                       (,quakec--variable-name-re nil nil (0 'quakec-variable-name-face)))
     (,quakec--function-c-re . (1 'quakec-function-name-face ))
     (,quakec--function-qc-re . (1 'quakec-function-name-face ))
     (,quakec--method-c-re . (1 'quakec-function-name-face ))

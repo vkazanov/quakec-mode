@@ -191,6 +191,17 @@ vector Variable3;
            'quakec-mode '("Variable1" "Variable2" "Variable3" "Field1" "Field2")
            'quakec-variable-name-face)))
 
+
+(ert-deftest font-lock-multiple-variables-test ()
+  (should (assess-face-at=
+           "
+float var1, var2;
+const float var3, var4;
+"
+           'quakec-mode '("var1" "var2" "var3" "var4")
+           'quakec-variable-name-face)))
+
+
 ;; TODO: c-mode doesn't help here
 ;;
 ;; (ert-deftest font-lock-literals-test ()
