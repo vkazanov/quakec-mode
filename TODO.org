@@ -260,9 +260,6 @@ header is updated with the correct information and written at the beginning of t
 
     - [ ] global definition based on progs.src or something
 
-  - [ ] see coffee-mode for how to provide customize interfaces, compilation commands,
-    setup hideshow minor mode, etc
-
   - [-] put together a list of things necessary for a release on public repos, also the
     next one
 
@@ -270,7 +267,77 @@ header is updated with the correct information and written at the beginning of t
 
     - [X] both c-style and qc-style function definition styles
 
-    - [ ] definition search in current project buffer + always inject definitions from
+    - [X] go through, say, 5 top mod codebases to check compatibility, extract features
+      necessary for proper work (client-side QC, extensions, etc)
+
+      - AD, Dwell, Copper, Alkaline, progs_dump
+
+      - [X] AD
+
+        - progs.src highlighting falling apart on underscores (IMPORTANT)
+
+        - csqc_defsclient.qc - single line multiple single definitions do not work (.float
+          weaponframe) (IMPORTANT)
+
+        - defs.qc - break function - is it a keyword? or a builtin? (IMPORTANT)
+
+        - progs.src - really need some kind of navigation/imenu/xref/jump to file
+
+        - csqc_defs.qc - inject a default definition source?
+
+        - csqc_defs.qc - #define symbol symbol
+
+        - csqc_defs.qc - #ifndef / #endif / #else
+
+        - csqc_defs.qc - #define macro( )
+
+        - csqc_defs.qc - const float smth not highlighted
+
+        - csqc_defsclient.qc - inject a default definition source?
+
+        - csqc_defsclient.qc - #pragma noref 1
+
+        - csqc_defsclient.qc - optional function parameter
+
+        - csqc_defsclient.qc - __variant function parameter
+
+        - csqc_defsclient.qc - filestream function parameter
+
+        - csqc_defsclient.qc - infostream function parameter
+
+        - csqc_defsclient.qc - searchhandle parameter type
+
+        - csqc_defsclient.qc - typedef
+
+        - csqc_defsclient.qc - field_t
+
+        - csqc_defsclient.qc - strbuf
+
+        - csqc_defs.qc - int
+
+        - defs.qc - WriteLong - unknown builtin
+
+        - defscustom.qc - nosave float configflag - type param.
+
+      - [X] Copper mod
+
+        - defs.qc - multiple defs per line
+
+        - defs.qc - nosave type param
+
+        - defs.qc - break keyword
+
+        - defs.qc - writelong builtin
+
+        - defs.qc - cvar builtin
+
+        - defs.qc - max builtin?!
+
+        - progs.src - pragma autoproto
+
+        - progs.src - define COOP 1
+
+    - [X] definition search in current project buffer + always inject definitions from
       defs.qc AND world.qc
 
       - defs.qc/world.qc should work for Eldoc
@@ -281,10 +348,42 @@ header is updated with the correct information and written at the beginning of t
 
       - defs.qc/world.qc should work for capf
 
-    - [ ] go through, say, 5 top mod codebases to check compatibility, extract features
-      necessary for proper work (client-side QC, extensions, etc)
+    - [-] font-lock improvements
 
-      - AD, Dwell, Copper, Alkaline, progs_dump
+      - [X] int
+
+      - [ ] multiple definitions per line
+
+      - [ ] const
+
+      - [ ] nosave
+
+      - [ ] optional
+
+      - [ ] filestream, inforstream, searchhandle
+
+      - [ ] __variant
+
+      - [ ] #define symbol symbol, #ifdef, #ifndef, #endif, #else)
+
+      - [ ] #define macrofunction() - highlight and symbol
+
+      - [ ] nosave
+
+      - [ ] WriteLong builtin
+
+      - [ ] max builtin
+
+      - [ ] cvar multin
+
+      - [ ] #pragma
+
+      - [ ] break - keyword or builtin?
+
+      - [ ] progs.src - underscore in symbols
+
+  - [ ] see coffee-mode for how to provide customize interfaces, compilation commands,
+    setup hideshow minor mode, etc
 
   - [ ] broader dialect support
 

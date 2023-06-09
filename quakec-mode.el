@@ -218,7 +218,7 @@ flymake backend"
   "A regexp matching keywords.")
 
 (defvar quakec--basic-type-re
-  (regexp-opt '("void" "entity" "float" "vector" "string") 'symbols)
+  (regexp-opt '("void" "entity" "float" "vector" "string" "int") 'symbols)
   "A regexp catching basic types.")
 
 (defvar quakec--name-re

@@ -3,6 +3,18 @@
 (require 'assess)
 (require 'quakec-mode)
 
+(ert-deftest font-lock-basic-type-test ()
+  (should (assess-face-at=
+           "
+entity	var1;
+float	var2;
+int	var3;
+vector	var4;
+string	var5;
+"
+           'quakec-mode '("entity" "float" "int" "vector" "string")
+           'quakec-type-face)))
+
 (ert-deftest font-lock-comments-test ()
   (should (assess-face-at=
            "/* a random multiline comment continued on this line and
