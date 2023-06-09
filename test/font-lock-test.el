@@ -173,6 +173,8 @@ vector Variable3;
            'quakec-mode '("Variable1" "Variable2" "Variable3" "Field1" "Field2")
            'quakec-variable-name-face)))
 
+;; TODO: c-mode doesn't help here
+;;
 ;; (ert-deftest font-lock-literals-test ()
 ;;   (should (assess-face-at= "
 ;; 11
@@ -185,6 +187,18 @@ vector Variable3;
 ;;                            '("11" "2.2" "-333" "444" "string")
 ;;                            )))
 
+
+(ert-deftest font-lock-pragma-test ()
+  (should (assess-face-at=
+           "
+#define TRUE FALSE
+#if TRUE
+#elif
+#else
+
+"
+           'quakec-mode '("define" "#if" "#elif" "#else")
+           'quakec-preprocessor-face)))
 
 (ert-deftest font-lock-progs-test ()
   (should (assess-face-at=

@@ -149,10 +149,14 @@ flymake backend"
 ;;
 
 (defvar quakec--pragmas-re
+  (rx-to-string '(seq line-start (or "#define" "#append" "#undef" "#if" "#ifdef" "#ifndef" "#elif" "#else" "#endif")))
+  "A regexp matching pragmas.")
+
+(defvar quakec--frame-pragmas-re
   (regexp-opt
    '("$frame" "$framegroupstart" "$framegroupend" "$flags" "$base" "$cd" "$modelname" "$origin" "$scale" "$skin")
    'symbols)
-  "A regexp matching pragmas.")
+  "A regexp matching legacy frame pragmas.")
 
 (defvar quakec--builtins-re
   (regexp-opt
@@ -440,12 +444,14 @@ something like \".void(\".")
 ;;
 
 (defvar quakec--font-lock-keywords
-  `((,quakec--keywords-re . 'quakec-keyword-face)
+  `((,quakec--pragmas-re . 'quakec-preprocessor-face)
+    (,quakec--frame-pragmas-re . 'quakec-preprocessor-face)
+
+    (,quakec--keywords-re . 'quakec-keyword-face)
     (,quakec--basic-type-re . 'quakec-type-face)
     (,quakec--type-modifier-keywords-re . 'quakec-keyword-face)
     (,quakec--constants-re . 'quakec-constant-face)
     (,quakec--builtins-re . 'quakec-builtin-face)
-    (,quakec--pragmas-re . 'quakec-preprocessor-face)
     (,quakec--global-variable-re (1 'quakec-variable-name-face)
                                  (,quakec--variable-name-re nil nil (1 'quakec-variable-name-face)))
     (,quakec--local-variable-re (1 'quakec-variable-name-face)
