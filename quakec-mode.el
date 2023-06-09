@@ -214,8 +214,12 @@ flymake backend"
   "A regexp matching constants.")
 
 (defvar quakec--keywords-re
-  (regexp-opt '("if" "else" "for" "do" "while" "switch" "case" "default" "break" "continue" "return" "local") 'symbols)
+  (regexp-opt '("if" "else" "for" "do" "while" "switch" "case" "default" "break" "continue" "return") 'symbols)
   "A regexp matching keywords.")
+
+(defvar quakec--type-modifier-keywords-re
+  (regexp-opt '("const" "var" "noref" "local" "static" "nonstatic" "nosave" "strip" "shared" "optional") 'symbols)
+  "A regexp matching type modifier keywords.")
 
 (defvar quakec--basic-type-re
   (regexp-opt '("void" "entity" "float" "vector" "string" "int") 'symbols)
@@ -436,6 +440,7 @@ something like \".void(\".")
 (defvar quakec--font-lock-keywords
   `((,quakec--keywords-re . 'quakec-keyword-face)
     (,quakec--basic-type-re . 'quakec-type-face)
+    (,quakec--type-modifier-keywords-re . 'quakec-keyword-face)
     (,quakec--constants-re . 'quakec-constant-face)
     (,quakec--builtins-re . 'quakec-builtin-face)
     (,quakec--pragmas-re . 'quakec-preprocessor-face)

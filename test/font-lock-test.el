@@ -15,6 +15,26 @@ string	var5;
            'quakec-mode '("entity" "float" "int" "vector" "string")
            'quakec-type-face)))
 
+
+(ert-deftest font-lock-type-modifiers-test ()
+  (should (assess-face-at=
+           "
+const entity var;
+var entity var;
+noref entity var;
+local entity var;
+static entity var;
+nonstatic entity var;
+nosave entity var;
+strip entity var;
+shared entity var;
+optional entity var;
+"
+           'quakec-mode
+           '("const" "var" "noref" "local" "static" "nonstatic" "nosave" "strip" "shared" "optional")
+           'quakec-keyword-face)))
+
+
 (ert-deftest font-lock-comments-test ()
   (should (assess-face-at=
            "/* a random multiline comment continued on this line and

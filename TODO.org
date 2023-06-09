@@ -352,23 +352,17 @@ header is updated with the correct information and written at the beginning of t
 
       - [X] int
 
+      - [X] type modifiers: const / var / static / nonstatic / local / nosave / inline / optional
+
+      - [ ] progs.src - underscore in symbols
+
       - [ ] multiple definitions per line
-
-      - [ ] const
-
-      - [ ] nosave
-
-      - [ ] optional
-
-      - [ ] filestream, inforstream, searchhandle
 
       - [ ] __variant
 
       - [ ] #define symbol symbol, #ifdef, #ifndef, #endif, #else)
 
       - [ ] #define macrofunction() - highlight and symbol
-
-      - [ ] nosave
 
       - [ ] WriteLong builtin
 
@@ -379,8 +373,6 @@ header is updated with the correct information and written at the beginning of t
       - [ ] #pragma
 
       - [ ] break - keyword or builtin?
-
-      - [ ] progs.src - underscore in symbols
 
   - [ ] see coffee-mode for how to provide customize interfaces, compilation commands,
     setup hideshow minor mode, etc
