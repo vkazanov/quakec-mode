@@ -20,16 +20,16 @@ int var6;
 (ert-deftest font-lock-type-modifiers-test ()
   (should (assess-face-at=
            "
-const entity var;
-var entity var;
-noref entity var;
-local entity var;
-static entity var;
-nonstatic entity var;
-nosave entity var;
-strip entity var;
-shared entity var;
-optional entity var;
+const entity v;
+var entity v;
+noref entity v;
+local entity v;
+static entity v;
+nonstatic entity v;
+nosave entity v;
+strip entity v;
+shared entity v;
+optional entity v;
 "
            'quakec-mode
            '("const" "var" "noref" "local" "static" "nonstatic" "nosave" "strip" "shared" "optional")
@@ -75,12 +75,13 @@ a = b;
            'font-lock-comment-face)))
 
 (ert-deftest font-lock-builtins-test ()
+  "Builtins should be highlighted with a `quakec-builtin-face' but
+only in non-defining context."
   (should (assess-face-at=
            "
-entity	world;
-entity	self;
-entity	other;
-float	time;
+float (void) fname = {
+    world + self + other + time;
+}
 "
            'quakec-mode '("world" "self" "other" "time")
            'quakec-builtin-face)))

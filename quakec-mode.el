@@ -380,12 +380,8 @@ something like \".void(\".")
                       (group-n 1 (regexp ,quakec--name-re))
                       (zero-or-more whitespace)
 
-                      ;; non function params
-                      (regexp "[^(].+")
-
-                      ;; but that's it
-                      ";"
-                      ))
+                      ;; non a c-style function
+                      (regexp "[^(]")))
   "A regexp catching a global variable declaration.")
 
 (defvar quakec--local-variable-re
