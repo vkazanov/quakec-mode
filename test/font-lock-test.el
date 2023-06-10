@@ -217,6 +217,17 @@ float fname(float p1, floatp2) = {
            'quakec-mode '("var_var1" "var2" "var3" "var4" "var5")
            'quakec-variable-name-face)))
 
+(ert-deftest font-lock-multiple-fields-test ()
+  "Check multple field definitions per line. Same as for globals
+but with a dot prefix in type."
+  (should (assess-face-at=
+           "
+.float var_var1 = 1, var2 = 2.0;
+const .float var3, var4, var5;
+};
+"
+           'quakec-mode '("var_var1" "var2" "var3" "var4" "var5")
+           'quakec-variable-name-face)))
 
 ;; TODO: c-mode doesn't help here
 ;;

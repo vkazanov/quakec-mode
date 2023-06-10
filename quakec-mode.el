@@ -400,7 +400,7 @@ something like \".void(\".")
                       (zero-or-more whitespace)))
   "A regexp catching a local variable definition.
 
-This is essentially the same as `quakec--globa-variable-re' but
+This is essentially the same as `quakec--global-variable-re' but
 with leading whitespace and without the need to rule out function
 definitions.
 
@@ -418,10 +418,13 @@ a much better job here.")
   "A regexp catching variable names in a list of names defined.")
 
 (defvar quakec--field-re
-  (rx-to-string `(seq line-start (zero-or-more whitespace)
-                      "."
+  (rx-to-string `(seq line-start
+                      ;; optional type modifier
+                      (opt (regexp ,quakec--type-modifier-keywords-re)
+                           (zero-or-more whitespace))
 
-                      ;; field type
+                      ;; global variable type
+                      "."
                       (regexp ,quakec--basic-type-re)
                       (zero-or-more whitespace)
 
@@ -429,14 +432,11 @@ a much better job here.")
                       (group-n 1 (regexp ,quakec--name-re))
                       (zero-or-more whitespace)
 
-                      ;; init or the lack of it
-                      (opt "=" (zero-or-more whitespace)
-                           (regexp ".+"))
-
-                      ;; but that's it
-                      ";"
-                      ))
-  "A regexp catching an entity field declaration.")
+                      ;; non a c-style function
+                      (regexp "[^(]")))
+  "A regexp catching an entity field declaration. Same as
+`quakec--global-variable-re' but with a type prefixed with a
+dot (\".\") ")
 
 ;;
 ;;; Syntax highlighting (font-lock)
@@ -454,17 +454,19 @@ a much better job here.")
     ;; TODO: both global and local fail looking for multiple line
     ;; variable definition because of the semicolon in the end of the regexp
 
-    ;; find a variable definition then go back to first variable name
-    ;; and then look for comma-separated var names
+    ;; find a variable definition then go back to the beginning of the
+    ;; variable name and then look for comma-separated var names
     (,quakec--global-variable-re
      (,quakec--variable-name-re (goto-char (match-beginning 1)) nil
                                 (1 'quakec-variable-name-face t)))
-    ;; same as for globals
+    ;; locals work the same way as globals
     (,quakec--local-variable-re
      (,quakec--variable-name-re (goto-char (match-beginning 1)) nil
                                 (1 'quakec-variable-name-face t)))
-    (,quakec--field-re (1 'quakec-variable-name-face)
-                       (,quakec--variable-name-re nil nil (0 'quakec-variable-name-face)))
+    ;; same for fields
+    (,quakec--field-re
+     (,quakec--variable-name-re (goto-char (match-beginning 1)) nil
+                                (1 'quakec-variable-name-face t)))
     (,quakec--function-c-re . (1 'quakec-function-name-face ))
     (,quakec--function-qc-re . (1 'quakec-function-name-face ))
     (,quakec--method-c-re . (1 'quakec-function-name-face ))
