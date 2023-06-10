@@ -2,7 +2,7 @@
 
   Take the following steps to achieve glory:
 
-  - clean install
+  - clean install with as many emacs versions as possible
 
   - check with major mods (AD, Copper, Alkaline, progsdump)
 
