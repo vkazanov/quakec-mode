@@ -315,57 +315,6 @@ flymake backend"
                   (zero-or-more whitespace) "]"))
   "A regexp catching a frame function additional params.")
 
-(defvar quakec--method-parameter-left-re
-  (rx-to-string `(seq line-start (zero-or-more whitespace)
-                      "."
-
-		      ;; return type
-		      (regexp ,quakec--basic-type-re)
-		      (zero-or-more whitespace)
-
-                      ;; maybe name (in C-style)
-                      (opt (regexp ,quakec--name-re)
-                           (zero-or-more whitespace))
-
-                      ;; parameter list start
-                      "("))
-  "A regexp catching the prefix of a method declaration, i.e.
-something like \".void(\".")
-
-(defvar quakec--method-qc-re
-  (rx-to-string `(seq line-start (zero-or-more whitespace)
-                      "."
-
-		      ;; return type
-		      (regexp ,quakec--basic-type-re)
-		      (zero-or-more whitespace)
-
-		      ;; parameter list
-		      "(" (zero-or-more (regexp ".")) ")"
-		      (zero-or-more whitespace)
-
-		      ;; method name
-		      (group-n 1 (regexp ,quakec--name-re))))
-  "A regexp catching a QuakeC-style method name.")
-
-(defvar quakec--method-c-re
-  (rx-to-string `(seq line-start (zero-or-more whitespace)
-                      "."
-
-		      ;; return type
-		      (regexp ,quakec--basic-type-re)
-		      (zero-or-more whitespace)
-
-                      ;; method name
-		      (group-n 1 (regexp ,quakec--name-re))
-		      (zero-or-more whitespace)
-
-		      ;; parameter list
-		      "(" (zero-or-more (regexp ".")) ")"
-		      (zero-or-more whitespace)))
-  "A regexp catching a C-style method name.")
-
-
 (defvar quakec--global-variable-re
   (rx-to-string `(seq line-start
                       ;; optional type modifier
@@ -469,10 +418,7 @@ dot (\".\") ")
                                 (1 'quakec-variable-name-face t)))
     (,quakec--function-c-re . (1 'quakec-function-name-face ))
     (,quakec--function-qc-re . (1 'quakec-function-name-face ))
-    (,quakec--method-c-re . (1 'quakec-function-name-face ))
-    (,quakec--method-qc-re . (1 'quakec-function-name-face ))
     (,quakec--function-parameter-left-re (,quakec--function-parameter-re nil nil (1 'quakec-variable-name-face)))
-    (,quakec--method-parameter-left-re (,quakec--function-parameter-re nil nil (1 'quakec-variable-name-face)))
     (,quakec--function-frame-params-re (2 'quakec-variable-name-face)
                                        (3 'quakec-variable-name-face))))
 
@@ -544,8 +490,6 @@ names to lists of name definitions.")
      for (deftyp defre)
      in `((function ,quakec--function-qc-re)
           (function ,quakec--function-c-re)
-          (method ,quakec--method-qc-re)
-          (method ,quakec--method-c-re)
           (global ,quakec--global-variable-re)
           (field ,quakec--field-re))
      do
@@ -641,7 +585,6 @@ as required by `imenu-create-index-function'."
     (cl-loop
      for (deftyp deftypname)
      in '((function "*Functions*")
-          (method "*Methods*")
           (global "*Globals*")
           (field "*Fields*"))
      do
@@ -654,8 +597,7 @@ as required by `imenu-create-index-function'."
 ;;
 
 (defun quakec--eldoc-function ()
-  "Show a definition string for the current function or method at
-point."
+  "Show a definition string for the symbol at point."
   (when-let*
       ((symbol-name (thing-at-point 'symbol 'no-props))
        (deflist (quakec--find-buffer-definitions symbol-name))
@@ -680,9 +622,7 @@ point."
       (beginning-of-defun)
       ;; Check if we are within a function body
       (if (and (or (looking-at quakec--function-qc-re)
-                   (looking-at quakec--function-c-re)
-                   (looking-at quakec--method-qc-re)
-                   (looking-at quakec--method-c-re))
+                   (looking-at quakec--function-c-re))
                (save-match-data
                  (end-of-defun)
                  (<= original-position (point))))

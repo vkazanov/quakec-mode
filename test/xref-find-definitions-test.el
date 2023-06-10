@@ -61,23 +61,6 @@ float Global;
         (should (equal (length defs) 1))
         (should (equal (xref-item-summary (nth 0 defs)) "Field"))))))
 
-(ert-deftest xref-find-definitions-method-test ()
-  (assess-with-filesystem
-      '(("test.qc" "
-/* a commented out declaration*/
-/* .void() Commented; */
-
-// .void() AnotherCommented;
-
-/* a declaration */
-.void() Method;
-
-"))
-    (assess-with-find-file "test.qc"
-      (let ((defs (quakec--xref-find-definitions "Method")))
-        (should (equal (length defs) 1))
-        (should (equal (xref-item-summary (nth 0 defs)) "Method"))))))
-
 (ert-deftest xref-find-definitions-all-test ()
   (assess-with-filesystem
       '(("test.qc" "
@@ -87,12 +70,10 @@ float Global;
 /* void() DeclaredFunction; */
 /* float DeclaredGlobalVar; */
 /* .float DeclaredField; */
-/* .void() DeclaredMethod; */
 
 // void() DeclaredFunction;
 // float DeclaredGlobalVar;
 // .float DeclaredField;
-// .void() DeclaredMethod;
 
 /* declarations */
 void() DeclaredFunction;
@@ -105,8 +86,7 @@ float DeclaredGlobalVar;
       (let ((defs-func (quakec--xref-find-definitions "DeclaredFunction"))
             (defs-global-var (quakec--xref-find-definitions "DeclaredGlobalVar"))
             (defs-local-var (quakec--xref-find-definitions "DeclaredLocalVar"))
-            (defs-field (quakec--xref-find-definitions "DeclaredField"))
-            (defs-method (quakec--xref-find-definitions "DeclaredMethod")))
+            (defs-field (quakec--xref-find-definitions "DeclaredField")))
 
         (should (equal (length defs-func) 1))
         (should (equal (xref-item-summary (nth 0 defs-func)) "DeclaredFunction"))
@@ -115,10 +95,7 @@ float DeclaredGlobalVar;
         (should (equal (xref-item-summary (nth 0 defs-global-var)) "DeclaredGlobalVar"))
 
         (should (equal (length defs-field) 1))
-        (should (equal (xref-item-summary (nth 0 defs-field)) "DeclaredField"))
-
-        (should (equal (length defs-method) 1))
-        (should (equal (xref-item-summary (nth 0 defs-method)) "DeclaredMethod"))))))
+        (should (equal (xref-item-summary (nth 0 defs-field)) "DeclaredField"))))))
 
 (ert-deftest xref-find-definitions-external-test ()
   (assess-with-filesystem

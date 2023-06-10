@@ -34,12 +34,7 @@ float(entity targ, entity inflictor) TestFunction4 =
 void() TestFunction5 = [$pain1, $pain2]
 {
     a = b;
-};
-
-/* a method */
-.void() TestFunction6 =
-{
-    a = unknownSymbol
+    a = unknownSymbol;
 };
 
 "
@@ -72,10 +67,6 @@ void() TestFunction5 = [$pain1, $pain2]
    ;; frame function
    (look-at "TestFunction5")
    (should (equal (quakec--eldoc-function) "void() TestFunction5"))
-
-   ;; Method function
-   (look-at "TestFunction6")
-   (should (equal (quakec--eldoc-function) ".void() TestFunction6"))
 
    ;; unknown symbol
    (look-at "unknownSymbol")

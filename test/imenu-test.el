@@ -30,24 +30,14 @@ void() TestFunction5 = [$pain1, $pain2]
     a = b;
 };
 
-/* a method */
-.void() TestFunction6 =
-{
-    a = b
-};
-
 "
    (let* ((index-alist (quakec--imenu-create-index))
-          (function-index-alist (alist-get "*Functions*" index-alist nil nil #'string-equal))
-          (method-index-alist (alist-get "*Methods*" index-alist nil nil #'string-equal)))
+          (function-index-alist (alist-get "*Functions*" index-alist nil nil #'string-equal)))
 
      (should (equal (length function-index-alist) 3))
      (should (alist-get "TestFunction3" function-index-alist nil nil #'string-equal))
      (should (alist-get "TestFunction4" function-index-alist nil nil #'string-equal))
-     (should (alist-get "TestFunction5" function-index-alist nil nil #'string-equal))
-
-     (should (equal (length method-index-alist) 1))
-     (should (alist-get "TestFunction6" method-index-alist nil nil #'string-equal)))))
+     (should (alist-get "TestFunction5" function-index-alist nil nil #'string-equal)))))
 
 (ert-deftest imenu-variables-test ()
   (with-quakec-temp-buffer

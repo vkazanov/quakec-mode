@@ -366,9 +366,9 @@ header is updated with the correct information and written at the beginning of t
 
       - [X] highlight definitions with type modifiers
 
-      - [ ] multiple definitions per line
+      - [-] multiple definitions per line
 
-        - [ ] font-lock
+        - [X] font-lock
 
         - [ ] definition lookups
 
