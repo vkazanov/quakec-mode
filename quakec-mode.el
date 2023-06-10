@@ -382,10 +382,10 @@ something like \".void(\".")
 
                       ;; non a c-style function
                       (regexp "[^(]")))
-  "A regexp catching a global variable declaration.")
+  "A regexp catching a global variable definition.")
 
 (defvar quakec--local-variable-re
-  (rx-to-string `(seq line-start (zero-or-more whitespace)
+  (rx-to-string `(seq line-start (one-or-more whitespace)
 
                       ;; optional type modifier
                       (opt (regexp ,quakec--type-modifier-keywords-re)
@@ -397,15 +397,15 @@ something like \".void(\".")
 
                       ;; variable name
                       (group-n 1 (regexp ,quakec--name-re))
-                      (zero-or-more whitespace)
+                      (zero-or-more whitespace)))
+  "A regexp catching a local variable definition.
 
-                      ;; non function params
-                      (regexp "[^(].+")
+This is essentially the same as `quakec--globa-variable-re' but
+with leading whitespace and without the need to rule out function
+definitions.
 
-                      ;; but that's it
-                      ";"
-                      ))
-  "A regexp catching a local variable declaration.")
+NOTE: Very fragile and unreliable, even a partial parser would do
+a much better job here.")
 
 (defvar quakec--variable-name-re
   (rx-to-string `(seq (zero-or-more whitespace)
@@ -459,8 +459,10 @@ something like \".void(\".")
     (,quakec--global-variable-re
      (,quakec--variable-name-re (goto-char (match-beginning 1)) nil
                                 (1 'quakec-variable-name-face t)))
-    (,quakec--local-variable-re (goto-char (match-beginning 1)) nil
-                                (1 'quakec-variable-name-face t))
+    ;; same as for globals
+    (,quakec--local-variable-re
+     (,quakec--variable-name-re (goto-char (match-beginning 1)) nil
+                                (1 'quakec-variable-name-face t)))
     (,quakec--field-re (1 'quakec-variable-name-face)
                        (,quakec--variable-name-re nil nil (0 'quakec-variable-name-face)))
     (,quakec--function-c-re . (1 'quakec-function-name-face ))

@@ -193,11 +193,26 @@ vector Variable3;
            'quakec-variable-name-face)))
 
 
-(ert-deftest font-lock-multiple-variables-test ()
+(ert-deftest font-lock-multiple-global-variables-test ()
+  "Check global variable/constant definition highlighting. "
   (should (assess-face-at=
            "
 float var_var1 = 1, var2 = 2.0;
 const float var3, var4, var5;
+"
+           'quakec-mode '("var_var1" "var2" "var3" "var4" "var5")
+           'quakec-variable-name-face)))
+
+
+(ert-deftest font-lock-multiple-local-variables-test ()
+  "Check function-local variable/constant definition highlighting.
+Note how it checks both whitespace and tab indentation. "
+  (should (assess-face-at=
+           "
+float fname(float p1, floatp2) = {
+    float var_var1 = 1, var2 = 2.0;
+	const float var3, var4, var5;
+};
 "
            'quakec-mode '("var_var1" "var2" "var3" "var4" "var5")
            'quakec-variable-name-face)))
