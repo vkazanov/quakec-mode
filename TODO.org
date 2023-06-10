@@ -254,13 +254,13 @@ header is updated with the correct information and written at the beginning of t
 
   - [X] extract specialised faces to be used for highlighting
 
-  - [-] Eldoc
+  - [X] Eldoc
 
     - [X] local definitions
 
-    - [ ] global definition based on progs.src or something
+    - [X] global definition based on progs.src or something
 
-  - [-] put together a list of things necessary for a release on public repos, also the
+  - [X] put together a list of things necessary for a release on public repos, also the
     next one
 
     - [X] unified local definition cache (xref, eldoc, capf, imenu)
@@ -348,7 +348,7 @@ header is updated with the correct information and written at the beginning of t
 
       - defs.qc/world.qc should work for capf
 
-    - [-] font-lock improvements
+    - [X] font-lock improvements
 
       - [X] int
 
@@ -366,11 +366,11 @@ header is updated with the correct information and written at the beginning of t
 
       - [X] highlight definitions with type modifiers
 
-      - [-] multiple definitions per line
+      - [X] multiple definitions per line
 
         - [X] font-lock
 
-        - [ ] definition lookups
+        - [X] definition lookups
 
   - [ ] see coffee-mode for how to provide customize interfaces, compilation commands,
     setup hideshow minor mode, etc
@@ -397,6 +397,10 @@ header is updated with the correct information and written at the beginning of t
 
   - [ ] flycheck
 
+  - [ ] projectile support
+
+  - [ ] project.el support
+
   - [ ] hideshow
 
   - [ ] publish the package
@@ -413,7 +417,7 @@ header is updated with the correct information and written at the beginning of t
 
     - [ ] README update
 
-    - [ ] emacs lisp conventions for variables and constants?
+    - [ ] check and enforce emacs lisp conventions
 
     - [ ] eval-when-compile for rx
 

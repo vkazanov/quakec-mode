@@ -35,14 +35,17 @@ float(entity targ, entity inflictor) Declared =
 
 // float AnotherCommented;
 
-/* a global definition */
-float Global;
+/* global definitions */
+float Global0 = 1.0;
+float Global1, Global2, Global3;
+float Global4;
 
 "))
     (assess-with-find-file "test.qc"
-      (let ((defs (quakec--xref-find-definitions "Global")))
-        (should (equal (length defs) 1))
-        (should (equal (xref-item-summary (nth 0 defs)) "Global"))))))
+      (dolist (name '("Global0" "Global1" "Global2" "Global3" "Global4"))
+        (let ((defs (quakec--xref-find-definitions name)))
+          (should (equal (length defs) 1))
+          (should (equal (xref-item-summary (nth 0 defs)) name)))))))
 
 (ert-deftest xref-find-definitions-field-test ()
   (assess-with-filesystem
@@ -52,14 +55,17 @@ float Global;
 
 // .float AnotherCommented;
 
-/* a declaration */
-.float Field;
+/* definitions */
+.float Field0;
+.float Field1 = 1.0;
+.float Field2 = 2.0, Field3, Field4;
 
 "))
     (assess-with-find-file "test.qc"
-      (let ((defs (quakec--xref-find-definitions "Field")))
-        (should (equal (length defs) 1))
-        (should (equal (xref-item-summary (nth 0 defs)) "Field"))))))
+      (dolist (name '("Field0" "Field1" "Field2" "Field3" "Field4"))
+        (let ((defs (quakec--xref-find-definitions name)))
+          (should (equal (length defs) 1))
+          (should (equal (xref-item-summary (nth 0 defs)) name)))))))
 
 (ert-deftest xref-find-definitions-all-test ()
   (assess-with-filesystem

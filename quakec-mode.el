@@ -484,32 +484,110 @@ names to lists of name definitions.")
     (setq quakec--buffer-definitions-cache newcache)))
 
 (defun quakec--update-buffer-definitions (cache-ht)
-  "Fill the buffer-local QuakeC definitions CACHE-HT (a hash table)."
+  "Fill the buffer-local QuakeC definition cache CACHE-HT (a hash
+table)."
+  (cl-assert (hash-table-p cache-ht))
   (save-excursion
-    (cl-loop
-     for (deftyp defre)
-     in `((function ,quakec--function-qc-re)
-          (function ,quakec--function-c-re)
-          (global ,quakec--global-variable-re)
-          (field ,quakec--field-re))
-     do
-     (goto-char (point-min))
-     (while (re-search-forward defre nil t)
-       (unless (nth 4 (syntax-ppss))
-         (let* ((name (match-string-no-properties 1))
-                (file (buffer-file-name))
-                (beg (match-beginning 0))
-                (end (match-end 0))
-                (line (line-number-at-pos))
-                ;; TODO: just save 0 for now
-                (col 0)
-                (signature (match-string 0))
-                (newdef (quakec--definition-create
-                         name file
-                         beg end
-                         line col
-                         signature deftyp)))
-           (push newdef (gethash name cache-ht))))))))
+    ;; functions are easy: just look up regexps
+    ;;
+
+    ;; QC-style functions
+    ;;
+    (goto-char (point-min))
+    (while (re-search-forward quakec--function-qc-re nil t)
+      (unless (nth 4 (syntax-ppss))
+        (let* ((name (match-string-no-properties 1))
+               (file (buffer-file-name))
+               (beg (match-beginning 0))
+               (end (match-end 0))
+               (line (line-number-at-pos))
+               ;; TODO: just save 0 for now
+               (col 0)
+               (signature (match-string 0))
+               (newdef (quakec--definition-create
+                        name file
+                        beg end
+                        line col
+                        signature 'function)))
+          (push newdef (gethash name cache-ht)))))
+
+    ;; C-style functions
+    ;;
+    (goto-char (point-min))
+    (while (re-search-forward quakec--function-c-re nil t)
+      (unless (nth 4 (syntax-ppss))
+        (let* ((name (match-string-no-properties 1))
+               (file (buffer-file-name))
+               (beg (match-beginning 0))
+               (end (match-end 0))
+               (line (line-number-at-pos))
+               ;; TODO: just save 0 for now
+               (col 0)
+               (signature (match-string 0))
+               (newdef (quakec--definition-create
+                        name file
+                        beg end
+                        line col
+                        signature 'function)))
+          (push newdef (gethash name cache-ht)))))
+
+    ;; When looking up global variables and fields we can have
+    ;; multiple symbol definitions per line, i.e. float a,b,c;. So
+    ;; find an anchor first, match next.
+
+    ;; Variables
+    ;;
+    (goto-char (point-min))
+    (while (re-search-forward quakec--global-variable-re nil t)
+      (unless (nth 4 (syntax-ppss))
+        ;; Remember everything but the name as it's the only thing
+        ;; that differs between single line definitions.
+        (let* ((file (buffer-file-name))
+               (beg (match-beginning 0))
+               (end (match-end 0))
+               (line (line-number-at-pos))
+               ;; TODO: just save 0 for now
+               (col 0)
+               (signature (match-string 0))
+               (lineend (line-end-position)))
+          ;; Backtrack to the first variable name on the line (we know
+          ;; it's there because of the anchor match above. Limit
+          ;; search by LINEEND. NOTE: This missed a few cases (float
+          ;; a, \n b, \n c) but should work most of the time.
+          (goto-char (match-beginning 1))
+          (while (re-search-forward quakec--variable-name-re lineend t)
+            (let* ((name (match-string-no-properties 1))
+                   (newdef (quakec--definition-create
+                            name
+                            file
+                            beg end
+                            line col
+                            signature 'global)))
+              (push newdef (gethash name cache-ht)))))))
+
+    ;; Fields (same as variables)
+    ;;
+    (goto-char (point-min))
+    (while (re-search-forward quakec--field-re nil t)
+      (unless (nth 4 (syntax-ppss))
+        (let* ((file (buffer-file-name))
+               (beg (match-beginning 0))
+               (end (match-end 0))
+               (line (line-number-at-pos))
+               ;; TODO: just save 0 for now
+               (col 0)
+               (signature (match-string 0))
+               (lineend (line-end-position)))
+          (goto-char (match-beginning 1))
+          (while (re-search-forward quakec--variable-name-re lineend t)
+            (let* ((name (match-string-no-properties 1))
+                   (newdef (quakec--definition-create
+                            name
+                            file
+                            beg end
+                            line col
+                            signature 'field)))
+              (push newdef (gethash name cache-ht)))))))))
 
 (defun quakec--get-definition-positions (definition-type)
   "Retrieve a list all known buffer definitions of DEFINITION-TYPE
