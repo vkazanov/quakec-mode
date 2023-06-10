@@ -134,7 +134,7 @@ header is updated with the correct information and written at the beginning of t
 
     - [X] methods
 
-  - [-] unit testing
+  - [X] unit testing
 
     - [X] find-definitions
 
@@ -144,23 +144,13 @@ header is updated with the correct information and written at the beginning of t
 
     - [X] rel path, project root
 
-    - [-] font-lock
+    - [X] font-lock
 
       - [X] functions/funparams
 
       - [X] variables
 
       - [X] keywords
-
-      - [ ] literals, especially vectors
-
-        - something non-trivial going on because of how cc-mode expects things to be,
-          can't just use modify-syntax-entry
-
-        - removing cc-mode inheritance removes a lot of niceness (e.g. beginning-of-defun and
-          indentation)
-
-        - just use font-lock to find these? what about navigation?
 
   - [X] which-func support
 
@@ -206,21 +196,9 @@ header is updated with the correct information and written at the beginning of t
 
     - [X] extract faces
 
-  - [-] xref
+  - [X] xref
 
     - [X] local definitions
-
-    - [ ] wider definition search (hybrid with grep-like or something?)
-
-    - [ ] good example as well: js-mode (derived from espresso-mode i used to use),
-      especially the way js-find-symbol works with all known symbols across all open
-      buffers. It might be also worth doing something like a filter based on a project
-      root.
-
-    - [ ] https://github.com/js-emacs/xref-js2/blob/master/xref-js2.el - interesting
-      hybrid ast/ag global symbol search
-
-    - [ ] similar to js-mode js2-mode does symbol search in all open buffers
 
   - [-] compilation support for popular compilers
 
@@ -240,17 +218,12 @@ header is updated with the correct information and written at the beginning of t
 
     - [X] eval-after-load when injecting compilation-mode regexps
 
-    - [ ] qcc
 
-    - [ ] others?
-
-  - [-] flymake
+  - [X] flymake
 
     - [X] FTEQCC
 
     - [X] GMQCC
-
-    - [ ] qcc
 
   - [X] extract specialised faces to be used for highlighting
 
@@ -372,16 +345,26 @@ header is updated with the correct information and written at the beginning of t
 
         - [X] definition lookups
 
+  - [ ] form the first release!
+
   - [ ] see coffee-mode for how to provide customize interfaces, compilation commands,
     setup hideshow minor mode, etc
 
-  - [ ] further improvements
+  - [ ] font-lock
 
     - [ ] #define macrofunction() - highlight and symbol
 
     - [ ] break - keyword or builtin? both, depending on the context (qcc - builtin, fteqcc - keyword)
 
-  - [ ] broader dialect support
+    - [ ] literals, function builtin literals, vectors
+
+      - something non-trivial going on because of how cc-mode expects things to be,
+        can't just use modify-syntax-entry
+
+      - removing cc-mode inheritance removes a lot of niceness (e.g. beginning-of-defun and
+        indentation)
+
+      - just use font-lock to find these? what about navigation?
 
     - [ ] full fteqcc dialect
 
@@ -395,30 +378,31 @@ header is updated with the correct information and written at the beginning of t
 
       - [ ] preprocessing?
 
-  - [ ] flycheck
+  - [ ] completion
+
+    - [ ] open buffer definition search (in addition to current + defs fiels), see
+      js-mode/js2-mode
+
+    - [ ] hybrid grep/parsing global definition search, see
+      https://github.com/js-emacs/xref-js2/blob/master/xref-js2.el, an interesting hybrid
+      ast/ag global symbol search
+
+  - [ ] compilation
+
+    - [ ] see if simplifying compilation is possible
+
+    - [ ] original qcc
+
+  - [ ] linting
+
+    - [ ] fteqcc linting support (https://github.com/fte-team/fteqw/issues/176)
+
+    - [ ] gmqcc linting support (https://github.com/graphitemaster/gmqcc/issues/203)
+
+    - [ ] flycheck (maybe doesn't make sense unless fteqcc/gmqcc add proper linting support)
 
   - [ ] projectile support
 
   - [ ] project.el support
 
   - [ ] hideshow
-
-  - [ ] publish the package
-
-  - [ ] enforce emacs lisp coding conventions
-
-  - [ ] write a package release checklist
-
-    - [ ] Elsa
-
-    - [ ] checkdoc
-
-    - [ ] package-lint
-
-    - [ ] README update
-
-    - [ ] check and enforce emacs lisp conventions
-
-    - [ ] eval-when-compile for rx
-
-  - [ ] global completion

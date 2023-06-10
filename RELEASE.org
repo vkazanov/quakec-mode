@@ -1,0 +1,23 @@
+* Release Checklist
+
+  Take the following steps to achieve glory:
+
+  - clean install
+
+  - check with major mods (AD, Copper, Alkaline, progsdump)
+
+  - check emacs-lisp conventions
+
+  - Elsa
+
+  - checkdoc
+
+  - package-lint
+
+  - README update
+
+  - form a Github release
+
+  - Melpa package
+
+  - Announce
