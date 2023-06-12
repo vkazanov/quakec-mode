@@ -44,14 +44,12 @@
   :group 'languages)
 
 (defcustom quakec-project-source "progs.src"
-  "QuakeC project root file to use for location of a root
-directory."
+  "QuakeC project root file to use for location of a root directory."
   :type 'string
   :group 'quakec-mode)
 
 (defcustom quakec-project-definition-files '("defs.qc" "world.qc")
-  "A list of file paths relative to the project root to use for
-completion and definition lookups."
+  "File paths relative to project root used in definition lookups."
   :type '(repeat string)
   :group 'quakec-mode)
 
@@ -61,14 +59,12 @@ completion and definition lookups."
   :group 'quakec-mode)
 
 (defcustom quakec-flymake-fteqcc-cmd '("fteqcc" "-Wall")
-  "A list of strings to use as a command when running the FTEQCC
-flymake backend"
+  "Strings to use as a command in the FTEQCC flymake backend."
   :type '(repeat string)
   :group 'quakec-mode)
 
 (defcustom quakec-flymake-gmqcc-cmd '("gmqcc" "-Wall" "-nocolor" "-std=fteqcc")
-  "A list of strings to use as a command when running the QMQCC
-flymake backend"
+  "Strings to use as a command when in the QMQCC flymake backend."
   :type '(repeat string)
   :group 'quakec-mode)
 
@@ -79,43 +75,43 @@ flymake backend"
 (defvar quakec-keyword-face 'quakec-keyword-face)
 (defface quakec-keyword-face
   '((t :inherit font-lock-keyword-face))
-  "Face for keywords"
+  "Face for keywords."
   :group 'quakec-mode)
 
 (defvar quakec-type-face 'quakec-type-face)
 (defface quakec-type-face
   '((t :inherit font-lock-type-face))
-  "Face for types"
+  "Face for types."
   :group 'quakec-mode)
 
 (defvar quakec-constant-face 'quakec-constant-face)
 (defface quakec-constant-face
   '((t :inherit font-lock-constant-face))
-  "Face for constants"
+  "Face for constants."
   :group 'quakec-mode)
 
 (defvar quakec-builtin-face 'quakec-builtin-face)
 (defface quakec-builtin-face
   '((t :inherit font-lock-builtin-face))
-  "Face for builtins"
+  "Face for builtins."
   :group 'quakec-mode)
 
 (defvar quakec-preprocessor-face 'quakec-preprocessor-face)
 (defface quakec-preprocessor-face
   '((t :inherit font-lock-preprocessor-face))
-  "Face for preprocessor pragmas"
+  "Face for preprocessor pragmas."
   :group 'quakec-mode)
 
 (defvar quakec-variable-name-face 'quakec-variable-name-face)
 (defface quakec-variable-name-face
   '((t :inherit font-lock-variable-name-face))
-  "Face for variable names"
+  "Face for variable names."
   :group 'quakec-mode)
 
 (defvar quakec-function-name-face 'quakec-function-name-face)
 (defface quakec-function-name-face
   '((t :inherit font-lock-function-name-face))
-  "Face for function names"
+  "Face for function names."
   :group 'quakec-mode)
 
 ;;; progs.src faces
@@ -123,25 +119,25 @@ flymake backend"
 (defvar quakec-progs-output-path-face 'quakec-progs-output-path-face)
 (defface quakec-progs-output-path-face
   '((t :inherit font-lock-string-face))
-  "Face for paths in QuakeC progs.src files"
+  "Face for paths in QuakeC progs.src files."
   :group 'quakec-mode)
 
 (defvar quakec-progs-output-fname-face 'quakec-progs-output-fname-face)
 (defface quakec-progs-output-fname-face
   '((t :inherit font-lock-keyword-face))
-  "Face for output filename in QuakeC progs.src files"
+  "Face for output filename in QuakeC progs.src files."
   :group 'quakec-mode)
 
 (defvar quakec-progs-path-face 'quakec-progs-path-face)
 (defface quakec-progs-path-face
   '((t :inherit font-lock-string-face))
-  "Face for paths in QuakeC progs.src files"
+  "Face for paths in QuakeC progs.src files."
   :group 'quakec-mode)
 
 (defvar quakec-progs-fname-face 'quakec-progs-fname-face)
 (defface quakec-progs-fname-face
   '((t :inherit font-lock-string-face))
-  "Face for filenames in QuakeC progs.src files"
+  "Face for filenames in QuakeC progs.src files."
   :group 'quakec-mode)
 
 ;;
@@ -290,8 +286,7 @@ flymake backend"
                       (zero-or-more whitespace)
 
 		      ;; parameter list
-		      "(" (zero-or-more (regexp ".")) ")"
-		      ))
+		      "(" (zero-or-more (regexp ".")) ")"))
   "A regexp catching a C-style function name.")
 
 (defvar quakec--function-frame-params-re
@@ -383,9 +378,9 @@ a much better job here.")
 
                       ;; non a c-style function
                       (regexp "[^(]")))
-  "A regexp catching an entity field declaration. Same as
-`quakec--global-variable-re' but with a type prefixed with a
-dot (\".\") ")
+  "A regexp catching an entity field declaration.
+Same as `quakec--global-variable-re' but with a type prefixed
+with a dot (\".\")")
 
 ;;
 ;;; Syntax highlighting (font-lock)
@@ -439,10 +434,12 @@ quakec-mode facilities relying on defition search."
   deftype)
 
 (defvar-local quakec--buffer-definitions-cache nil
-  "A cache of QuakeC definitions in the current buffer mapping id
-names to lists of name definitions.")
+  "A cache of QuakeC definitions.
+The cache maps ids to definition locations described by
+`quakec-definition'.")
 
 (defun quakec--update-definitions ()
+  "Build a cache of definitions for the current buffer."
   (let ((externaldefs quakec-project-definition-files)
         newcache)
 
@@ -484,8 +481,7 @@ names to lists of name definitions.")
     (setq quakec--buffer-definitions-cache newcache)))
 
 (defun quakec--update-buffer-definitions (cache-ht)
-  "Fill the buffer-local QuakeC definition cache CACHE-HT (a hash
-table)."
+  "Fill the QuakeC definition cache CACHE-HT (a hash table)."
   (cl-assert (hash-table-p cache-ht))
   (save-excursion
     ;; functions are easy: just look up regexps
@@ -590,8 +586,10 @@ table)."
               (push newdef (gethash name cache-ht)))))))))
 
 (defun quakec--get-definition-positions (definition-type)
-  "Retrieve a list all known buffer definitions of DEFINITION-TYPE
-mapped to positions in cons cells."
+  "Retrieve a list of all known buffer definitions.
+
+Returns a list cons cells mapping definitions of type
+DEFINITION-TYPE to positions in cons cells."
   (let (defpositions)
     (cl-loop for deflist being the hash-values of quakec--buffer-definitions-cache
              do
@@ -649,7 +647,7 @@ mapped to positions in cons cells."
 
 (cl-defmethod xref-backend-definitions ((backend (eql quakec)) identifier)
   "QuakeC file-level definition finding Xref BACKEND.
-Argument IDENTIFIER is a symbol to lookup."
+IDENTIFIER is a symbol to lookup."
   (quakec--xref-find-definitions identifier))
 
 ;;
@@ -657,8 +655,9 @@ Argument IDENTIFIER is a symbol to lookup."
 ;;
 
 (defun quakec--imenu-create-index ()
-  "Build an Imenu index of file definitions. Return an index alist
-as required by `imenu-create-index-function'."
+  "Build an Imenu index of file definitions.
+Return an index alist as required by
+`imenu-create-index-function'."
   (let ((index-alist))
     (cl-loop
      for (deftyp deftypname)
@@ -712,9 +711,10 @@ as required by `imenu-create-index-function'."
 ;;
 
 (defun quakec--find-project-root ()
-  "Find the root of the QuakeC project, indicated by the
-`quakec-project-source' (`progs.src') file. Signal a user error
-if not in a project."
+  "Find a path to the root of the QuakeC project.
+The root is indicated by the file specified in
+`quakec-project-source' (`progs.src') file. Signals a
+`user-error' if not in a project."
   (let ((root (locate-dominating-file
                (or (buffer-file-name) default-directory)
                quakec-project-source)))
@@ -723,8 +723,10 @@ if not in a project."
     root))
 
 (defun quakec--project-p ()
-  "Check if working within a QuakeC project, indicated by the
-`quakec-project-source' (`progs.src') file. "
+  "Check if working within a QuakeC project.
+The root is indicated by the file specified in
+`quakec-project-source' (`progs.src') file. Signals a
+`user-error' if not in a project."
   (let ((root (locate-dominating-file
                (or (buffer-file-name) default-directory)
                quakec-project-source)))
@@ -735,13 +737,13 @@ if not in a project."
   (expand-file-name fpath (quakec--find-project-root)))
 
 (defun quakec--project-file-exists (fpath)
-  "Return t if file exists in the current project using a FPATH
-relative to the project root."
+  "Return t if a file exists in the current project.
+FPATH - relative project path check."
   (file-exists-p (quakec--project-file-abs-path fpath)))
 
 (defun quakec--relative-path (&optional fpath)
-  "Create a relative path for current buffer's file or FPATH with
-respect to the project root."
+  "Create an relative path for a project file.
+FPATH - file path relative to project root."
   (file-relative-name (or fpath (buffer-file-name))
                       (quakec--find-project-root)))
 
@@ -753,12 +755,17 @@ respect to the project root."
 (defvar-local quakec--flymake-proc nil)
 
 (defun quakec--flymake-fteqcc-build-diagnostic-re (fpath)
+  "Build a regular expression catching FTEQCC diagnostic messages.
+FPATH - a path to a file to extract diagnostic messages for."
   (format "^\\(?:%s\\|-\\):\\([0-9]+\\): \\(.*\\)$" (regexp-quote fpath)))
 
 (defun quakec--flymake-gmqcc-build-diagnostic-re (fpath)
+  "Build a regular expression catching GMQCC diagnostic messages.
+FPATH - a path to a file to extract diagnostic messages for."
   (format "^\\(?:%s\\|-\\):\\([0-9]+\\):[0-9]+: \\(.*\\)$" (regexp-quote fpath)))
 
 (defun quakec--flymake-collect-diagnostics (report-fn sourcebuf diag-re)
+  "Collect Flymake diagnostics for a given buffer."
   (goto-char (point-min))
   (cl-loop
    while (search-forward-regexp diag-re nil t)
@@ -927,7 +934,7 @@ respect to the project root."
      (3 quakec-progs-fname-face)))
   '("\\.src$") ;; auto-mode list
   nil          ;; functions to run
-  "A mode for progs.src QuakeC files")
+  "A mode for progs.src QuakeC files.")
 
 ;;;###autoload
 (add-to-list 'auto-mode-alist '("\\.qc\\'" . quakec-mode))

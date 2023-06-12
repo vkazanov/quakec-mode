@@ -2,11 +2,11 @@
 
   Take the following steps to achieve glory:
 
-  - clean install
+  - clean install and tests on 27.1, 27.2, 28.1, 28.2
 
   - check with major mods (AD, Copper, Alkaline, progsdump)
 
-  - check emacs-lisp conventions
+  - check emacs-lisp [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Coding-Conventions.html][conventions]]
 
   - Elsa
 
@@ -21,3 +21,5 @@
   - Melpa package
 
   - Announce
+
+  - add a record on how it went in RELEASE.org
