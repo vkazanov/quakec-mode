@@ -408,15 +408,15 @@ with a dot (\".\")")
     ;; variable name and then look for comma-separated var names
     (,quakec--global-variable-re
      (,quakec--variable-name-re (goto-char (match-beginning 1)) nil
-                                (1 'quakec-variable-name-face t)))
+                                (1 'quakec-variable-name-face)))
     ;; locals work the same way as globals
     (,quakec--local-variable-re
      (,quakec--variable-name-re (goto-char (match-beginning 1)) nil
-                                (1 'quakec-variable-name-face t)))
+                                (1 'quakec-variable-name-face)))
     ;; same for fields
     (,quakec--field-re
      (,quakec--variable-name-re (goto-char (match-beginning 1)) nil
-                                (1 'quakec-variable-name-face t)))
+                                (1 'quakec-variable-name-face)))
     (,quakec--function-c-re . (1 'quakec-function-name-face ))
     (,quakec--function-qc-re . (1 'quakec-function-name-face ))
     (,quakec--function-parameter-left-re (,quakec--function-parameter-re nil nil (1 'quakec-variable-name-face)))
