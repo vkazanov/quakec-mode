@@ -6,7 +6,7 @@
 ;; Version: 0.1
 ;; Keywords: games, languages
 ;; URL: https://github.com/vkazanov/quakec-mode
-;; Package-Requires: ((emacs "25.1"))
+;; Package-Requires: ((emacs "27.1"))
 
 ;;; Commentary:
 
@@ -38,7 +38,7 @@
 ;;; Customization
 ;;
 
-(defgroup quakec-mode nil
+(defgroup quakec nil
   "Support for QuakeC code."
   :link '(url-link "https://github.com/vkazanov/quakec-mode")
   :group 'languages)
@@ -46,27 +46,27 @@
 (defcustom quakec-project-source "progs.src"
   "QuakeC project root file to use for location of a root directory."
   :type 'string
-  :group 'quakec-mode)
+  :group 'quakec)
 
 (defcustom quakec-project-definition-files '("defs.qc" "world.qc")
   "File paths relative to project root used in definition lookups."
   :type '(repeat string)
-  :group 'quakec-mode)
+  :group 'quakec)
 
 (defcustom quakec-compile-command quakec-fteqcc-compile-command
   "A default command to use for compiling QuakeC project."
   :type 'string
-  :group 'quakec-mode)
+  :group 'quakec)
 
 (defcustom quakec-flymake-fteqcc-cmd '("fteqcc" "-Wall")
   "Strings to use as a command in the FTEQCC flymake backend."
   :type '(repeat string)
-  :group 'quakec-mode)
+  :group 'quakec)
 
 (defcustom quakec-flymake-gmqcc-cmd '("gmqcc" "-Wall" "-nocolor" "-std=fteqcc")
   "Strings to use as a command when in the QMQCC flymake backend."
   :type '(repeat string)
-  :group 'quakec-mode)
+  :group 'quakec)
 
 ;;
 ;;; Faces
@@ -76,43 +76,43 @@
 (defface quakec-keyword-face
   '((t :inherit font-lock-keyword-face))
   "Face for keywords."
-  :group 'quakec-mode)
+  :group 'quakec)
 
 (defvar quakec-type-face 'quakec-type-face)
 (defface quakec-type-face
   '((t :inherit font-lock-type-face))
   "Face for types."
-  :group 'quakec-mode)
+  :group 'quakec)
 
 (defvar quakec-constant-face 'quakec-constant-face)
 (defface quakec-constant-face
   '((t :inherit font-lock-constant-face))
   "Face for constants."
-  :group 'quakec-mode)
+  :group 'quakec)
 
 (defvar quakec-builtin-face 'quakec-builtin-face)
 (defface quakec-builtin-face
   '((t :inherit font-lock-builtin-face))
   "Face for builtins."
-  :group 'quakec-mode)
+  :group 'quakec)
 
 (defvar quakec-preprocessor-face 'quakec-preprocessor-face)
 (defface quakec-preprocessor-face
   '((t :inherit font-lock-preprocessor-face))
   "Face for preprocessor pragmas."
-  :group 'quakec-mode)
+  :group 'quakec)
 
 (defvar quakec-variable-name-face 'quakec-variable-name-face)
 (defface quakec-variable-name-face
   '((t :inherit font-lock-variable-name-face))
   "Face for variable names."
-  :group 'quakec-mode)
+  :group 'quakec)
 
 (defvar quakec-function-name-face 'quakec-function-name-face)
 (defface quakec-function-name-face
   '((t :inherit font-lock-function-name-face))
   "Face for function names."
-  :group 'quakec-mode)
+  :group 'quakec)
 
 ;;; progs.src faces
 
@@ -120,25 +120,25 @@
 (defface quakec-progs-output-path-face
   '((t :inherit font-lock-string-face))
   "Face for paths in QuakeC progs.src files."
-  :group 'quakec-mode)
+  :group 'quakec)
 
 (defvar quakec-progs-output-fname-face 'quakec-progs-output-fname-face)
 (defface quakec-progs-output-fname-face
   '((t :inherit font-lock-keyword-face))
   "Face for output filename in QuakeC progs.src files."
-  :group 'quakec-mode)
+  :group 'quakec)
 
 (defvar quakec-progs-path-face 'quakec-progs-path-face)
 (defface quakec-progs-path-face
   '((t :inherit font-lock-string-face))
   "Face for paths in QuakeC progs.src files."
-  :group 'quakec-mode)
+  :group 'quakec)
 
 (defvar quakec-progs-fname-face 'quakec-progs-fname-face)
 (defface quakec-progs-fname-face
   '((t :inherit font-lock-string-face))
   "Face for filenames in QuakeC progs.src files."
-  :group 'quakec-mode)
+  :group 'quakec)
 
 ;;
 ;;; Syntax highlighting and (limited) parsing regexps
@@ -614,7 +614,7 @@ DEFINITION-TYPE to positions in cons cells."
 
 (defun quakec-completion-at-point ()
   "Provide completion for local QuakeC symbols."
-  (let (symbol-bounds symbols-start symbols-end)
+  (let (complete-function symbol-bounds symbols-start symbols-end)
     (setq symbol-bounds (bounds-of-thing-at-point 'symbol))
     (when (and (setq symbols-start (car symbol-bounds))
                (setq symbols-end (cdr symbol-bounds)))
@@ -827,10 +827,12 @@ FPATH - a path to a file to extract diagnostic messages for."
 
 ;;;###autoload
 (defun quakec-setup-flymake-fteqcc-backend ()
+  "Setup a Flymake diagnostic function using FTEQCC."
   (add-hook 'flymake-diagnostic-functions quakec-flymake-fteqcc))
 
 ;;;###autoload
 (defun quakec-setup-flymake-gmqcc-backend ()
+  "Setup a Flymake diagnostic function using GMQCC."
   (add-hook 'flymake-diagnostic-functions quakec-flymake-gmqcc))
 
 
@@ -838,17 +840,16 @@ FPATH - a path to a file to extract diagnostic messages for."
 ;;; Compilation mode support
 ;;
 
-(eval-after-load 'compile
-  '(progn
-     ;; compile warning highlighting for FTEQCC
-     (add-to-list 'compilation-error-regexp-alist 'fteqcc)
-     (add-to-list 'compilation-error-regexp-alist-alist
-                  '(fteqcc "^\\(.*\\)(\\([0-9]+\\)):\\(.*\\)$" 1 2))
+(with-eval-after-load 'compile
+  ;; compile warning highlighting for FTEQCC
+  (add-to-list 'compilation-error-regexp-alist 'fteqcc)
+  (add-to-list 'compilation-error-regexp-alist-alist
+               '(fteqcc "^\\(.*\\)(\\([0-9]+\\)):\\(.*\\)$" 1 2))
 
-     ;; compiler warning highlighting for GMQCC
-     (add-to-list 'compilation-error-regexp-alist 'gmqcc)
-     (add-to-list 'compilation-error-regexp-alist-alist
-                  '(gmqcc "^\\(.*\\):\\([0-9]+\\):\\([0-9]+\\): \\(.*\\): \\(.*\\)$" 1 2 3))))
+  ;; compiler warning highlighting for GMQCC
+  (add-to-list 'compilation-error-regexp-alist 'gmqcc)
+  (add-to-list 'compilation-error-regexp-alist-alist
+               '(gmqcc "^\\(.*\\):\\([0-9]+\\):\\([0-9]+\\): \\(.*\\): \\(.*\\)$" 1 2 3)))
 
 ;;
 ;;; Compile commands
@@ -892,7 +893,7 @@ FPATH - a path to a file to extract diagnostic messages for."
   "Major mode for editing QuakeC files.
 
 \\{quakec-mode-map}"
-  :group 'quakec-mode
+  :group 'quakec
 
   ;; Basic syntax highlighting
   (setq-local comment-start "// ")

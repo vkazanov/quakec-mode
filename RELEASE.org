@@ -12,7 +12,7 @@
 
   - checkdoc
 
-  - package-lint
+  - package-lint (flycheck-package)
 
   - README update
 
