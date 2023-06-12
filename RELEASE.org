@@ -16,6 +16,8 @@
 
   - README update
 
+  - Comments update
+
   - form a Github release
 
   - Melpa package
