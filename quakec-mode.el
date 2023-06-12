@@ -72,6 +72,12 @@
 ;;; Faces
 ;;
 
+(defvar quakec-comment-face 'quakec-comment-face)
+(defface quakec-comment-face
+  '((t :inherit font-lock-comment-face))
+  "Face for comments."
+  :group 'quakec)
+
 (defvar quakec-keyword-face 'quakec-keyword-face)
 (defface quakec-keyword-face
   '((t :inherit font-lock-keyword-face))
@@ -901,6 +907,7 @@ FPATH - a path to a file to extract diagnostic messages for."
 
   ;; And font-locking
   (setq font-lock-defaults '((quakec--font-lock-keywords)))
+  (setq-local font-lock-comment-face 'quakec-comment-face)
 
   ;; Imenu
   (setq imenu-case-fold-search t)

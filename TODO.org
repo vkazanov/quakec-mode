@@ -233,7 +233,7 @@ header is updated with the correct information and written at the beginning of t
 
     - [X] global definition based on progs.src or something
 
-  - [X] put together a list of things necessary for a release on public repos, also the
+  - [-] put together a list of things necessary for a release on public repos, also the
     next one
 
     - [X] unified local definition cache (xref, eldoc, capf, imenu)
@@ -344,6 +344,8 @@ header is updated with the correct information and written at the beginning of t
         - [X] font-lock
 
         - [X] definition lookups
+
+    - [ ] bug with broken highlighting when a comment follows a variable definition
 
   - [ ] form the first release!
 

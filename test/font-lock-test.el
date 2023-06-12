@@ -72,7 +72,7 @@ a = b;
 */
 "
            'quakec-mode '("float" "void" "Function1" "Function2" "Function3")
-           'font-lock-comment-face)))
+           'quakec-comment-face)))
 
 (ert-deftest font-lock-builtins-test ()
   "Builtins should be highlighted with a `quakec-builtin-face' but
@@ -174,6 +174,29 @@ vector Variable3;
 "
            'quakec-mode '("Variable1" "Variable2" "Variable3" "Field1" "Field2")
            'quakec-variable-name-face)))
+
+
+(ert-deftest font-lock-variables-fields-comments-test ()
+  "Check comments following definitions."
+  (should (assess-face-at=
+           "
+/*
+float comment;
+*/
+
+float Variable1; // varcomment
+
+float  Variable2 = 2;
+
+vector Variable3;
+
+.float Field1; // fieldcomment
+
+.vector Field2;
+
+"
+           'quakec-mode '("comment" "varcomment" "fieldcomment" )
+           'quakec-comment-face)))
 
 
 (ert-deftest font-lock-multiple-global-variables-test ()
