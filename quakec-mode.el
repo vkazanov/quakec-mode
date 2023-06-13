@@ -654,7 +654,7 @@ DEFINITION-TYPE to positions in cons cells."
         (push fileloc matches)))
     matches))
 
-(cl-defmethod xref-backend-definitions ((backend (eql quakec)) identifier)
+(cl-defmethod xref-backend-definitions ((_ (eql quakec)) identifier)
   "QuakeC file-level definition finding Xref BACKEND.
 IDENTIFIER is a symbol to lookup."
   (quakec--xref-find-definitions identifier))
@@ -865,7 +865,7 @@ FPATH - a path to a file to extract diagnostic messages for."
 ;;
 
 ;;;###autoload
-(defun quakec-compile (&optional args)
+(defun quakec-compile (&optional _)
   "Compile a QuakeC project."
   (interactive)
   (let ((default-directory (quakec--find-project-root))
