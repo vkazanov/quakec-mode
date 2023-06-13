@@ -925,7 +925,13 @@ FPATH - a path to a file to extract diagnostic messages for."
   (quakec--update-definitions)
 
   ;; Compile defaults setup
-  (setq-local compile-command quakec-compile-command))
+  (setq-local compile-command quakec-compile-command)
+
+  ;; Completion backend
+  (setq-local completion-at-point-functions '(quakec-completion-at-point))
+
+  ;; Definition lookups through xref
+  (setq-local xref-backend-functions #'quakec-xref-backend))
 
 ;;;###autoload
 (define-generic-mode quakec-progs-mode

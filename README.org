@@ -1,26 +1,60 @@
 * Emacs major mode for QuakeC files
 
-  I was horrified to realise that there's no major mode for QuakeC files so I came up with
-  this.
+  =quakec-mode= provides support for the original Quake 1 extension language, as well as
+  some popular extensions provided by the FTEQCC and GMQCC compilers. In addition to qc
+  code itself, a bundled =quakec-progs-mode= supports editing traditions src files.
 
   Features:
 
-  - vanilla QuakeC syntax highlighting
+  - QuakeC syntax
 
-  - imenu navigation
+  - progs.src syntax highlighting
 
-  - xref-based local definition jumping
+  - imenu support
 
-  - ElDoc inline help for local definitions
+  - xref-based definition lookups
 
-  - completion-at-point backend for local definitions
+  - ElDoc inline help for known defintions
 
-  - compile support assuming FTEQCC warning/error highlighting in Compilation buffers
+  - completion-at-point backend for known definition
+
+  - compilation mode support
 
   - which-function support
 
+  In other words, this is your typical Emacs major-mode.
 
-  In other words, this is your typical basic Emacs major-mode.
+* A QuakeC project as seen by quakec-mode
+
+  =quakec-mode= understands QuakeC mode projects as a directory containing a file
+  specified in the =quakec-project-source= variable (=progs.src= by default).
+
+* Compiling with compilation-mode
+
+  QuakeC includes compilation diagnostic message highlighting for =FTEQCC= and =GMQCC=.
+  Custom compilation commands are provided in the mode map: =quakec-compile= (=C-c C-c=)
+  and =quakec-recompile= (=C-c C-r=). Custom compilation commands always run from the
+  QuakeC project root defined by the =quakec-project-source= file.
+
+* Completion and definition lookups
+
+  The default =completion-at-point= backend (provided by =quakec-completion-at-point=)
+  loads definitions from the current buffer and a few additional files listed in
+  =quakec-project-definition-files= variable (=defs.qc= and =world.qc= by default).
+
+  For best experience it makes sense to use an additional completion frontend such as
+  =company-mode=.
+
+* Flymake
+
+  Partial support for error highlighting with Flyamke by FTEQCC / GMQCC is provided. Its
+  usefulness is limited because of how both compilers don't support limiting compilation
+  errors to a single file and always try to compile the full project. Most of the time
+  this means that errors will only be shown for files listed early in the =progs.src=
+  file.
+
+  Flymake support can be added by running =(quakec-setup-flymake-fteqcc-backend)= or
+  =(quakec-setup-flymake-gmqcc-backend)= followed by the usual =(flymake-mode 1)=.
 
 * Setup
 
@@ -28,29 +62,25 @@ Example setup:
 
 #+begin_src emacs-lisp
   (defun my-quakec-mode-hook ()
-
-    ;; typical QuakeC conventions
+    ;; typical QuakeC conventions (makes sense to set through
+    ;; .dir-locals.el files)
     (setq-local indent-tabs-mode t)
     (setq-local tab-width 4)
 
-    ;; Symbol completion local to a file
-    (setq-local completion-at-point-functions '(quakec-completion-at-point))
-
     ;; Company mode backend to for completion-at-point for local
     ;; definition
-    (setq-local company-backends '(company-capf))
 
-    ;; Jump to a definition of a symbol at point within a file
-    (setq-local xref-backend-functions #'quakec-xref-backend)
+    ;; (setq-local company-backends '(company-capf))
 
-    ;; Setup the compilation command
-    (setq-local compile-command quakec-fteqcc-compile-command))
+    ;; Limited Flymake support for error/warning inline highlighting
+
+    ;; (quakec-setup-flymake-fteqcc-backend)
+    ;; (flymake-mode 1)
+    )
 
   (use-package quakec-mode
-    ;; drop the file somehwere here
+    ;; drop the quakec-mode.el somewhere
     :load-path "path/to/quakec-mode"
-    ;; link the extension
-    :mode "\\.qc\\'"
     ;; run our configration
     :hook (quakec-mode . my-quakec-mode-hook))
 #+end_src
