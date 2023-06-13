@@ -79,7 +79,7 @@ Example setup:
     )
 
   (use-package quakec-mode
-    ;; drop the quakec-mode.el somewhere
+    ;; drop the quakec-mode.el somewhere (or just install from MELPA)
     :load-path "path/to/quakec-mode"
     ;; run our configration
     :hook (quakec-mode . my-quakec-mode-hook))
