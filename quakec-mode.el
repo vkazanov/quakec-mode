@@ -259,9 +259,9 @@
 
 (defvar quakec--function-parameter-left-re
   (rx-to-string `(seq line-start (zero-or-more whitespace)
-		      ;; return type
-		      (regexp ,quakec--basic-type-re)
-		      (zero-or-more whitespace)
+                      ;; return type
+                      (regexp ,quakec--basic-type-re)
+                      (zero-or-more whitespace)
 
                       ;; maybe name (in C-style)
                       (opt (regexp ,quakec--name-re)
@@ -278,9 +278,9 @@
                       (opt ",")
                       (zero-or-more whitespace)
 
-		      ;; type
-		      (regexp ,quakec--basic-type-re)
-		      (zero-or-more whitespace)
+                      ;; type
+                      (regexp ,quakec--basic-type-re)
+                      (zero-or-more whitespace)
 
                       ;; parameter name
                       (group-n 1 (regexp ,quakec--name-re))))
@@ -288,30 +288,30 @@
 
 (defvar quakec--function-qc-re
   (rx-to-string `(seq line-start (zero-or-more whitespace)
-		      ;; return type
-		      (regexp ,quakec--basic-type-re)
-		      (zero-or-more whitespace)
+                      ;; return type
+                      (regexp ,quakec--basic-type-re)
+                      (zero-or-more whitespace)
 
-		      ;; parameter list
-		      "(" (zero-or-more (regexp ".")) ")"
-		      (zero-or-more whitespace)
+                      ;; parameter list
+                      "(" (zero-or-more (regexp ".")) ")"
+                      (zero-or-more whitespace)
 
-		      ;; function name
-		      (group-n 1 (regexp ,quakec--name-re))))
+                      ;; function name
+                      (group-n 1 (regexp ,quakec--name-re))))
   "A regexp catching a QuakeC-style function name.")
 
 (defvar quakec--function-c-re
   (rx-to-string `(seq line-start (zero-or-more whitespace)
-		      ;; return type
-		      (regexp ,quakec--basic-type-re)
-		      (zero-or-more whitespace)
-
-                      ;; function name
-		      (group-n 1 (regexp ,quakec--name-re))
+                      ;; return type
+                      (regexp ,quakec--basic-type-re)
                       (zero-or-more whitespace)
 
-		      ;; parameter list
-		      "(" (zero-or-more (regexp ".")) ")"))
+                      ;; function name
+                      (group-n 1 (regexp ,quakec--name-re))
+                      (zero-or-more whitespace)
+
+                      ;; parameter list
+                      "(" (zero-or-more (regexp ".")) ")"))
   "A regexp catching a C-style function name.")
 
 (defvar quakec--function-frame-params-re
