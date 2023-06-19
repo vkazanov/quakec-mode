@@ -774,7 +774,11 @@ FPATH - a path to a file to extract diagnostic messages for."
   (format "^\\(?:%s\\|-\\):\\([0-9]+\\):[0-9]+: \\(.*\\)$" (regexp-quote fpath)))
 
 (defun quakec--flymake-collect-diagnostics (report-fn sourcebuf diag-re)
-  "Collect Flymake diagnostics for a given buffer."
+  "Collect Flymake diagnostics for a given buffer.
+
+REPORT-FN - a function that would report the error.
+SOURCEBUF - a buffer to find errors in.
+DIAG-RE - a regexp matching diagnostic messages."
   (goto-char (point-min))
   (cl-loop
    while (search-forward-regexp diag-re nil t)
@@ -791,7 +795,10 @@ FPATH - a path to a file to extract diagnostic messages for."
    finally (funcall report-fn diags)))
 
 (defun quakec--make-flymake-backend (compiler-exec command diag-re-builder)
-  "Create a new flymake backend for a specific QuakeC compiler."
+  "Create a new flymake backend for a specific QuakeC compiler.
+COMPILER-EXEC - a compiler executable to use.
+COMMAND - command to run the compiler.
+DIAG-RE-BUILDER - a function to call to generate the diagnostic regular expression."
   (lambda (report-fn &rest _args)
     ;; Make sure a compiler is available
     (unless (executable-find
