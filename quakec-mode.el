@@ -8,6 +8,22 @@
 ;; URL: https://github.com/vkazanov/quakec-mode
 ;; Package-Requires: ((emacs "27.1"))
 
+;; This program is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation, either version 3 of the License, or
+;; (at your option) any later version.
+
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+;; For a full copy of the GNU General Public License
+;; see <http://www.gnu.org/licenses/>.
+
 ;;; Commentary:
 
 ;; A major mode for editing QuakeC and QuakeC src files.
@@ -798,11 +814,12 @@ DIAG-RE - a regexp matching diagnostic messages."
   "Create a new flymake backend for a specific QuakeC compiler.
 COMPILER-EXEC - a compiler executable to use.
 COMMAND - command to run the compiler.
-DIAG-RE-BUILDER - a function to call to generate the diagnostic regular expression."
+DIAG-RE-BUILDER - a function to call to generate the diagnostic
+regular expression."
   (lambda (report-fn &rest _args)
     ;; Make sure a compiler is available
     (unless (executable-find
-             compiler-exec) (error (format "Cannot find %s" compiler-exec)))
+             compiler-exec) (error "Cannot find %s" compiler-exec))
 
     ;; Reset the cached process
     (when (process-live-p quakec--flymake-proc)
@@ -836,10 +853,10 @@ DIAG-RE-BUILDER - a function to call to generate the diagnostic regular expressi
         (process-send-eof quakec--flymake-proc)))))
 
 (defvar quakec-flymake-fteqcc
-  (funcall 'quakec--make-flymake-backend "fteqcc" quakec-flymake-fteqcc-cmd 'quakec--flymake-fteqcc-build-diagnostic-re))
+  (funcall 'quakec--make-flymake-backend "fteqcc" quakec-flymake-fteqcc-cmd #'quakec--flymake-fteqcc-build-diagnostic-re))
 
 (defvar quakec-flymake-gmqcc
-  (funcall 'quakec--make-flymake-backend "gmqcc" quakec-flymake-gmqcc-cmd 'quakec--flymake-gmqcc-build-diagnostic-re))
+  (funcall 'quakec--make-flymake-backend "gmqcc" quakec-flymake-gmqcc-cmd #'quakec--flymake-gmqcc-build-diagnostic-re))
 
 ;;;###autoload
 (defun quakec-setup-flymake-fteqcc-backend ()

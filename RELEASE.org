@@ -18,6 +18,8 @@
 
   - Comments update
 
+  - Melpazoid
+
   - form a Github release
 
   - Melpa package
