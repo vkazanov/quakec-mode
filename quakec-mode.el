@@ -853,10 +853,10 @@ regular expression."
         (process-send-eof quakec--flymake-proc)))))
 
 (defvar quakec-flymake-fteqcc
-  (funcall 'quakec--make-flymake-backend "fteqcc" quakec-flymake-fteqcc-cmd #'quakec--flymake-fteqcc-build-diagnostic-re))
+  (funcall #'quakec--make-flymake-backend "fteqcc" quakec-flymake-fteqcc-cmd #'quakec--flymake-fteqcc-build-diagnostic-re))
 
 (defvar quakec-flymake-gmqcc
-  (funcall 'quakec--make-flymake-backend "gmqcc" quakec-flymake-gmqcc-cmd #'quakec--flymake-gmqcc-build-diagnostic-re))
+  (funcall #'quakec--make-flymake-backend "gmqcc" quakec-flymake-gmqcc-cmd #'quakec--flymake-gmqcc-build-diagnostic-re))
 
 ;;;###autoload
 (defun quakec-setup-flymake-fteqcc-backend ()
